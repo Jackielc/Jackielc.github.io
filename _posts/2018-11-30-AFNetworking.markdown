@@ -15,13 +15,14 @@ tags:
 # 前言
 > 16年翻译的一篇关于AFNetWorking的文章，现在从Github搬运了过来
 
+<br>
+
+---
 
 >[原文－Tim Brandt《How Does Caching Work in AFNetworking? : AFImageCache & NSUrlCache Explained》](http://blog.originate.com/blog/2014/02/20/afimagecache-vs-nsurlcache/)
 
----
-<br>   
 # 正文
-<br>
+
    如果你是一个正在使用由[Matt Thompson](https://github.com/mattt)开发的网络库 `AFNetWorking`(如果你还没有使用,那你还在等什么?)的iOS开发者,也许你一直很好奇和困惑它的缓存机制,并且想要了解如何更好地充分利用它?
 
 `AFNetworking`实际上利用了两套单独的缓存机制:

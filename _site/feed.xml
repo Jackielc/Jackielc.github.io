@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 30 Nov 2018 17:59:40 +0800</pubDate>
-    <lastBuildDate>Fri, 30 Nov 2018 17:59:40 +0800</lastBuildDate>
+    <pubDate>Fri, 30 Nov 2018 18:09:42 +0800</pubDate>
+    <lastBuildDate>Fri, 30 Nov 2018 18:09:42 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -17,15 +17,17 @@
   &lt;p&gt;16年翻译的一篇关于AFNetWorking的文章，现在从Github搬运了过来&lt;/p&gt;
 &lt;/blockquote&gt;
 
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
 &lt;blockquote&gt;
   &lt;p&gt;&lt;a href=&quot;http://blog.originate.com/blog/2014/02/20/afimagecache-vs-nsurlcache/&quot;&gt;原文－Tim Brandt《How Does Caching Work in AFNetworking? : AFImageCache &amp;amp; NSUrlCache Explained》&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;hr /&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h1 id=&quot;正文&quot;&gt;正文&lt;/h1&gt;
-&lt;p&gt;&lt;br /&gt;
-   如果你是一个正在使用由&lt;a href=&quot;https://github.com/mattt&quot;&gt;Matt Thompson&lt;/a&gt;开发的网络库 &lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetWorking&lt;/code&gt;(如果你还没有使用,那你还在等什么?)的iOS开发者,也许你一直很好奇和困惑它的缓存机制,并且想要了解如何更好地充分利用它?&lt;/p&gt;
+
+&lt;p&gt;  如果你是一个正在使用由&lt;a href=&quot;https://github.com/mattt&quot;&gt;Matt Thompson&lt;/a&gt;开发的网络库 &lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetWorking&lt;/code&gt;(如果你还没有使用,那你还在等什么?)的iOS开发者,也许你一直很好奇和困惑它的缓存机制,并且想要了解如何更好地充分利用它?&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetworking&lt;/code&gt;实际上利用了两套单独的缓存机制:&lt;/p&gt;
 &lt;ul&gt;
