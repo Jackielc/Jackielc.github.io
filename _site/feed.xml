@@ -1,13 +1,224 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>JACK CAO</title>
+    <title>Jackcao</title>
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 30 Nov 2018 16:16:53 +0800</pubDate>
-    <lastBuildDate>Fri, 30 Nov 2018 16:16:53 +0800</lastBuildDate>
+    <pubDate>Fri, 30 Nov 2018 17:59:40 +0800</pubDate>
+    <lastBuildDate>Fri, 30 Nov 2018 17:59:40 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>AFNetWorking是如何进行数据缓存的?</title>
+        <description>&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;h1 id=&quot;前言&quot;&gt;前言&lt;/h1&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;16年翻译的一篇关于AFNetWorking的文章，现在从Github搬运了过来&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;http://blog.originate.com/blog/2014/02/20/afimagecache-vs-nsurlcache/&quot;&gt;原文－Tim Brandt《How Does Caching Work in AFNetworking? : AFImageCache &amp;amp; NSUrlCache Explained》&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;h1 id=&quot;正文&quot;&gt;正文&lt;/h1&gt;
+&lt;p&gt;&lt;br /&gt;
+   如果你是一个正在使用由&lt;a href=&quot;https://github.com/mattt&quot;&gt;Matt Thompson&lt;/a&gt;开发的网络库 &lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetWorking&lt;/code&gt;(如果你还没有使用,那你还在等什么?)的iOS开发者,也许你一直很好奇和困惑它的缓存机制,并且想要了解如何更好地充分利用它?&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetworking&lt;/code&gt;实际上利用了两套单独的缓存机制:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AFImagecache&lt;/code&gt; : 继承于&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCache&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetworking&lt;/code&gt;的图片内存缓存的类.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;   : &lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLConnection&lt;/code&gt;的默认缓存机制,用于存储&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLResponse&lt;/code&gt;对象:一个默认缓存在内存,并且可以通过一些配置操作可以持久缓存到磁盘的类.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;afimagecache是如何工作的&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AFImageCache&lt;/code&gt;是如何工作的?&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AFImageCache&lt;/code&gt;属于&lt;code class=&quot;highlighter-rouge&quot;&gt;UIImageView+AFNetworking&lt;/code&gt;的一部分,继承于&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCache&lt;/code&gt;,以URL(从&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLRequest&lt;/code&gt;对象中获取)字符串作为key值来存储&lt;code class=&quot;highlighter-rouge&quot;&gt;UIImage&lt;/code&gt;对象.
+&lt;code class=&quot;highlighter-rouge&quot;&gt;AFImageCache&lt;/code&gt;的定义如下:(这里我们声明了一个2M内存和100M磁盘空间的&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;对象.)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;@interface AFImageCache : NSCache &amp;lt;AFImageCache&amp;gt;
+
+// singleton instantiation :
+
++ (id &amp;lt;AFImageCache&amp;gt;)sharedImageCache {
+    static AFImageCache *_af_defaultImageCache = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&amp;amp;oncePredicate, ^{
+        _af_defaultImageCache = [[AFImageCache alloc] init];
+
+// clears out cache on memory warning :
+
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * __unused notification) {
+        [_af_defaultImageCache removeAllObjects];
+    }];
+});
+
+// key from [[NSURLRequest URL] absoluteString] :
+
+static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
+    return [[request URL] absoluteString];
+}
+
+@implementation AFImageCache
+
+// write to cache if proper policy on NSURLRequest :
+
+- (UIImage *)cachedImageForRequest:(NSURLRequest *)request {
+    switch ([request cachePolicy]) {
+        case NSURLRequestReloadIgnoringCacheData:
+        case NSURLRequestReloadIgnoringLocalAndRemoteCacheData:
+            return nil;
+        default:
+            break;
+    }
+
+    return [self objectForKey:AFImageCacheKeyFromURLRequest(request)];
+}
+
+// read from cache :
+
+- (void)cacheImage:(UIImage *)image
+        forRequest:(NSURLRequest *)request {
+    if (image &amp;amp;&amp;amp; request) {
+        [self setObject:image forKey:AFImageCacheKeyFromURLRequest(request)];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AFImageCache&lt;/code&gt;是&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCache&lt;/code&gt;的私有实现,它把所有可访问的&lt;code class=&quot;highlighter-rouge&quot;&gt;UIImage&lt;/code&gt;对象存入&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCache&lt;/code&gt;中,并控制着&lt;code class=&quot;highlighter-rouge&quot;&gt;UIImage&lt;/code&gt;对象应该在何时释放,如果&lt;code class=&quot;highlighter-rouge&quot;&gt;UIImage&lt;/code&gt;对象释放的时候你希望去做一些监听操作,你可以实现&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCacheDelegate&lt;/code&gt;的 &lt;code class=&quot;highlighter-rouge&quot;&gt;cache:willEvictObject&lt;/code&gt; 代理方法.&lt;a href=&quot;https://github.com/mattt&quot;&gt;Matt Thompson&lt;/a&gt;已经谦虚的告诉我在AFNetworking2.1版本中可通过&lt;code class=&quot;highlighter-rouge&quot;&gt;setSharedImageCache&lt;/code&gt;方法来配置&lt;code class=&quot;highlighter-rouge&quot;&gt;AFImageCache&lt;/code&gt;，&lt;a href=&quot;http://cocoadocs.org/docsets/AFNetworking/2.2.1/Categories/UIImageView+AFNetworking.html#//api/name/setSharedImageCache&quot;&gt;这里&lt;/a&gt;是 AFN2.2.1中的&lt;code class=&quot;highlighter-rouge&quot;&gt;UIImageView+AFNetworking&lt;/code&gt;文档.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h2 id=&quot;nsurlcache&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetworking&lt;/code&gt;使用了&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLConnection&lt;/code&gt;,它利用了iOS原生的缓存机制,并且&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;缓存了服务器返回的&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLRespone&lt;/code&gt;对象.&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt; 的&lt;code class=&quot;highlighter-rouge&quot;&gt;shareCache&lt;/code&gt;方法是默认开启的,你可以利用它来获取每一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLConnection&lt;/code&gt;对象的URL内容.让人不爽的是,它的默认配置是缓存到内存而且并没有写入到磁盘.为了tame the beast(驯服野兽？不太懂),增加可持续性,你可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;AppDelegate&lt;/code&gt;中简单地声明一个共享的&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;对象,像这样:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:2 * 1024 * 1024
+                                              diskCapacity:100 * 1024 * 1024
+                                              diskPath:nil];
+[NSURLCache setSharedURLCache:sharedCache];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;设置nsurlrequest对象的缓存策略&quot;&gt;设置&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLRequest&lt;/code&gt;对象的缓存策略&lt;/h5&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt; 将对每一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLRequest&lt;/code&gt;对象遵守缓存策略(&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLRequestCachePolicy&lt;/code&gt;)，策略如下所示:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt; NSURLRequestUseProtocolCachePolicy                //默认的缓存策略，对特定的URL请求使用网络协议中实现的缓存逻辑
+ NSURLRequestReloadIgnoringLocalCacheData          //忽略本地缓存，重新请请求
+ NSURLRequestReloadIgnoringLocalAndRemoteCacheData //忽略本地和远程缓存，重新请求
+ NSURLRequestReturnCacheDataElseLoad               //有缓存则从中加载，如果没有则去请求
+ NSURLRequestReturnCacheDataDontLoad               //无网络状态下不去请求，一直加载本地缓存数据无论其是否存在
+ NSURLRequestReloadRevalidatingCacheData           //默从原始地址确认缓存数据的合法性之后，缓存数据才可使用，否则请求原始地址
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&quot;用nsurlcache缓存数据到磁盘&quot;&gt;用&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;缓存数据到磁盘&lt;/h5&gt;
+
+&lt;h6 id=&quot;cache-control-http-header&quot;&gt;Cache-Control HTTP Header&lt;/h6&gt;
+&lt;p&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;Cache-Controlheader&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;Expires header&lt;/code&gt;存在于服务器返回的&lt;code class=&quot;highlighter-rouge&quot;&gt;HTTP response header&lt;/code&gt;中,来用于客户端的缓存工作(前者优先级要高于后者),这里面有很多地方需要注意,&lt;code class=&quot;highlighter-rouge&quot;&gt;Cache-Control&lt;/code&gt;可以拥有被定义为类似&lt;code class=&quot;highlighter-rouge&quot;&gt;max-age&lt;/code&gt;的参数（在更新响应之前要缓存多长时间), public/private 访问或者是&lt;code class=&quot;highlighter-rouge&quot;&gt;non－cache&lt;/code&gt;(不缓存响应数据),&lt;a href=&quot;http://dev.mobify.com/blog/beginners-guide-to-http-cache-headers/&quot;&gt;这里&lt;/a&gt;对&lt;code class=&quot;highlighter-rouge&quot;&gt;HTTP cache headers&lt;/code&gt;进行了很好的介绍.&lt;/p&gt;
+
+&lt;h6 id=&quot;继承并控制nsurlcache&quot;&gt;继承并控制&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;&lt;/h6&gt;
+&lt;p&gt;如果你想跳过&lt;code class=&quot;highlighter-rouge&quot;&gt;Cache-Control&lt;/code&gt;,并且想要自己来制定规则读写一个带有&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLResponse&lt;/code&gt;对象的&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;,你可以继承&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;.下面有个例子,使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;CACHE_EXPIRES&lt;/code&gt;来判断在获取源数据之前对缓存数据保留多长时间.(感谢 Mattt Thompson的&lt;a href=&quot;https://twitter.com/mattt/status/444538735838134272&quot;&gt;回复&lt;/a&gt;).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt; @interface CustomURLCache : NSURLCache
+
+static NSString * const CustomURLCacheExpirationKey = @&quot;CustomURLCacheExpiration&quot;;
+static NSTimeInterval const CustomURLCacheExpirationInterval = 600;
+
+@implementation CustomURLCache
+
++ (instancetype)standardURLCache {
+    static CustomURLCache *_standardURLCache = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;amp;onceToken, ^{
+        _standardURLCache = [[CustomURLCache alloc]
+                                 initWithMemoryCapacity:(2 * 1024 * 1024)
+                                 diskCapacity:(100 * 1024 * 1024)
+                                 diskPath:nil];
+    }
+
+    return _standardURLCache;
+}
+
+#pragma mark - NSURLCache
+
+- (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request {
+    NSCachedURLResponse *cachedResponse = [super cachedResponseForRequest:request];
+
+    if (cachedResponse) {
+        NSDate* cacheDate = cachedResponse.userInfo[CustomURLCacheExpirationKey];
+        NSDate* cacheExpirationDate = [cacheDate dateByAddingTimeInterval:CustomURLCacheExpirationInterval];
+        if ([cacheExpirationDate compare:[NSDate date]] == NSOrderedAscending) {
+            [self removeCachedResponseForRequest:request];
+            return nil;
+        }
+    }
+}
+
+    return cachedResponse;
+}
+
+- (void)storeCachedResponse:(NSCachedURLResponse *)cachedResponse
+                 forRequest:(NSURLRequest *)request
+{
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:cachedResponse.userInfo];
+    userInfo[CustomURLCacheExpirationKey] = [NSDate date];
+
+    NSCachedURLResponse *modifiedCachedResponse = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.data userInfo:userInfo storagePolicy:cachedResponse.storagePolicy];
+
+    [super storeCachedResponse:modifiedCachedResponse forRequest:request];
+}
+@end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在你有了属于自己的&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;的子类,不要忘了在&lt;code class=&quot;highlighter-rouge&quot;&gt;AppDelegate&lt;/code&gt;中初始化并且使用它.&lt;/p&gt;
+
+&lt;h6 id=&quot;在缓存之前重写nsurlresponse&quot;&gt;在缓存之前重写&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLResponse&lt;/code&gt;&lt;/h6&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-connection:willCacheResponse&lt;/code&gt; 代理方法是在被缓存之前用于截断和编辑由&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLConnection&lt;/code&gt;创建的&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCacheResponse&lt;/code&gt;的地方.
+对&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCacheResponse&lt;/code&gt;进行处理并返回一个可变的拷贝对象(代码来自&lt;a href=&quot;http://nshipster.com/nsurlcache/&quot;&gt;NSHipster blog&lt;/a&gt;).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+    NSMutableDictionary *mutableUserInfo = [[cachedResponse userInfo] mutableCopy];
+    NSMutableData *mutableData = [[cachedResponse data] mutableCopy];
+    NSURLCacheStoragePolicy storagePolicy = NSURLCacheStorageAllowedInMemoryOnly;
+
+    // ...
+
+    return [[NSCachedURLResponse alloc] initWithResponse:[cachedResponse response]
+                                                    data:mutableData
+                                                userInfo:mutableUserInfo
+                                           storagePolicy:storagePolicy];
+}
+
+// If you do not wish to cache the NSURLCachedResponse, just return nil from the delegate function:
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+    return nil;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h6 id=&quot;禁用nsurlcache&quot;&gt;禁用&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;&lt;/h6&gt;
+&lt;p&gt;不想使用&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;? 不为所动? 好吧,你可以禁用&lt;code class=&quot;highlighter-rouge&quot;&gt;NSURLCache&lt;/code&gt;,只需要将内存和磁盘空间设置为0就行了.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0
+                                              diskCapacity:0
+                                              diskPath:nil];
+[NSURLCache setSharedURLCache:sharedCache];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
+
+&lt;p&gt;我写这篇博客的目的是为iOS社区贡献绵薄之力,并总结了我是如何来处理关于&lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetworking&lt;/code&gt;缓存问题的.我们有个内部App在加载了大量图片后,出现了内存和性能问题,而我的主要职责是诊断这个App的缓存行为,在研究过程中,我在网上搜索了很多资料并且做了很多调试,在我汇总之后就写到了这篇博客中,我希望这篇文章可以为开发者使用&lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetworking&lt;/code&gt;时提供一些帮助,真心希望对你们有用!&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 30 Nov 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/11/30/AFNetworking/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/11/30/AFNetworking/</guid>
+        
+        <category>iOS</category>
+        
+        <category>Objective-C</category>
+        
+        <category>AFNetWorking</category>
+        
+        <category>Network</category>
+        
+        
+      </item>
     
       <item>
         <title>Welcome to Jackcao Blog</title>
@@ -83,6 +294,10 @@
         <guid isPermaLink="true">http://localhost:4000/2018/11/29/hello-2018/</guid>
         
         <category>生活</category>
+        
+        <category>iOS</category>
+        
+        <category>Objective-C</category>
         
         
       </item>
