@@ -5,30 +5,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="description" content="iOS Software Engineer | 这里是 @Jackchao 的个人博客，与你一起发现更大的世界。">
-    <meta name="keywords"  content="曹顺卿, Jackchao曹顺卿, JackChao, iOS Software Engineer, @Jack太棒, JackChao的博客, JackChao Blog, 博客, 个人网站, 互联网, iOS, 前端, 设计">
-    <meta name="theme-color" content="#000000">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="JavaScript 模块化七日谈 - 曹顺卿的博客 | Jackchao Blog">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:description" content="iOS Software Engineer | 这里是 @Jackchao 的个人博客，与你一起发现更大的世界。">
-    
-    <meta property="og:image" content="http://localhost:4000/img/avatar-hux-ny.jpg">
-    <meta property="og:url" content="http://localhost:4000/2015/07/09/js-module-7day/">
-    <meta property="og:site_name" content="曹顺卿的博客 | Jackchao Blog">
-    
-    <title>JavaScript 模块化七日谈 - 曹顺卿的博客 | Jackchao Blog</title>
-
-    <!-- Web App Manifest -->
-    <link rel="manifest" href="/pwa/manifest.json">
-
-    <!-- Favicon -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
-    
-    <!-- Canonical URL -->
+
+    <title>Example Post using Keynote Layout - JC的博客 | Jackcao Blog</title>
+
     <link rel="canonical" href="http://localhost:4000/2015/07/09/js-module-7day/">
 
     <!-- Bootstrap Core CSS -->
@@ -37,10 +20,20 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/hux-blog.min.css">
 
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
     <!-- Custom Fonts -->
     <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -59,9 +52,7 @@
 <body ontouchstart="">
 
     <!-- Navigation -->
-
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header page-scroll">
@@ -71,10 +62,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Jackchao Blog</a>
+            <a class="navbar-brand" href="/">JACK CAO</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
         <div id="huxblog_navbar">
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -82,45 +78,13 @@
                         <a href="/">Home</a>
                     </li>
                     
-                    
-                    
-                    
                     <li>
                         <a href="/about/">About</a>
                     </li>
                     
-                    
-                    
                     <li>
-                        <a href="/about/">About</a>
+                        <a href="/tags/">Tags</a>
                     </li>
-                    
-                    
-                    
-                    <li>
-                        <a href="/archive/">Archive</a>
-                    </li>
-                    
-                    
-                    
-                    
-                    
-                    <li>
-                        <a href="/portfolio/">Portfolio</a>
-                    </li>
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     
                 </ul>
             </div>
@@ -138,8 +102,10 @@
     var $navbar = document.querySelector('#huxblog_navbar');
     var $collapse = document.querySelector('.navbar-collapse');
 
-    var __HuxNav__ = {
-        close: function(){
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
             $navbar.className = " ";
             // wait until animation end.
             setTimeout(function(){
@@ -148,58 +114,25 @@
                     $collapse.style.height = "0px"
                 }
             },400)
-        },
-        open: function(){
+        }else{
+        // OPEN
             $collapse.style.height = "auto"
             $navbar.className += " in";
         }
     }
-
-    // Bind Event
-    $toggle.addEventListener('click', function(e){
-        if ($navbar.className.indexOf('in') > 0) {
-            __HuxNav__.close()
-        }else{
-            __HuxNav__.open()
-        }
-    })
-
-    /**
-     * Since Fastclick is used to delegate 'touchstart' globally
-     * to hack 300ms delay in iOS by performing a fake 'click',
-     * Using 'e.stopPropagation' to stop 'touchstart' event from 
-     * $toggle/$collapse will break global delegation.
-     * 
-     * Instead, we use a 'e.target' filter to prevent handler
-     * added to document close HuxNav.  
-     *
-     * Also, we use 'click' instead of 'touchstart' as compromise
-     */
-    document.addEventListener('click', function(e){
-        if(e.target == $toggle) return;
-        if(e.target.className == 'icon-bar') return;
-        __HuxNav__.close();
-    })
 </script>
 
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/home-bg.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-js-version.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
-
-
-
-
-
 <style type="text/css">
     header.intro-header{
+        /*background-image: url('/img/post-bg-js-version.jpg')*/
         height: 500px;
         overflow: hidden;
-    }
-    header.intro-header .container{
-        visibility: hidden; 
     }
     header iframe{
         width: 100%;
@@ -208,35 +141,30 @@
     }
 </style>
 <header class="intro-header" >
-    <iframe src="//huangxuan.me/js-module-7day/"></iframe>
-    <!-- keep for SEO -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
+    <iframe src="http://huangxuan.me/js-module-7day/"/>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                            <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
+                            
+                            <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
+                            
+                        </div>
+                        <h1>Example Post using Keynote Layout</h1>
                         
-                        <a class="tag" href="/archive/?tag=Slides" title="Slides">Slides</a>
                         
-                        <a class="tag" href="/archive/?tag=Web" title="Web">Web</a>
+                        <h2 class="subheading">Keynote: JavaScript Modularization Journey</h2>
                         
-                        <a class="tag" href="/archive/?tag=JavaScript" title="JavaScript">JavaScript</a>
-                        
+                        <span class="meta">Posted by Hux on July 9, 2015</span>
                     </div>
-                    <h1>JavaScript 模块化七日谈</h1>
-                    
-                    <h2 class="subheading">🎞  Slides:JavaScript Modularization Journey</h2>
-                    <span class="meta">Posted by Hux
-                        on July 9, 2015</span>
                 </div>
             </div>
         </div>
-    </div>
+    </iframe>
 </header>
-
-
-
-
 
 <!-- Post Content -->
 <article>
@@ -256,12 +184,11 @@
 
 <p>于是，我决定将它重新发到我的博客上，并为它专门制作了适用于 Keynote 展示文稿的新布局。它能自动根据屏幕大小/旋转以一定比例填充屏幕，你也可以直接点击下方链接在新页面打开，来获得更好的、沉浸式的全屏体验</p>
 
-<h3 id="watch-fullscreen-"><a href="https://huangxuan.me/js-module-7day/">Watch Fullscreen →</a></h3>
+<h3 id="watch-slides-"><a href="http://huangxuan.me/js-module-7day">Watch Slides →</a></h3>
 
-<div class="visible-md visible-lg">
-<img src="//huangxuan.me/js-module-7day/attach/qrcode.png" width="350" />
-<small class="img-hint">你也可以通过扫描二维码在手机上观看</small>
-</div>
+<p><img src="http://huangxuan.me/js-module-7day/attach/qrcode.png" width="350" height="350" /></p>
+
+<p><small class="img-hint">你也可以通过扫描二维码在手机上观看</small></p>
 
 <p>这个 Web Slides 开源在<a href="https://github.com/Huxpro/js-module-7day">我的 Github 上</a>，欢迎你帮助我完善这个展示文稿，你可以给我提 issue，可以 fork &amp; pull request。如果它能帮助到你了，希望你还能不吝啬 star 一下这个项目</p>
 
@@ -282,35 +209,27 @@
 <p><a href="http://lab.hakim.se/reveal-js">Reveal.js</a></p>
 
 
-                <hr style="visibility: hidden;">
+                <hr>
+
+                
+
+
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2015/06/15/alitrip-strategy/" data-toggle="tooltip" data-placement="top" title="聊聊「阿里旅行 · 去啊」—— 行业与战略 ">
-                        Previous<br>
-                        <span>聊聊「阿里旅行 · 去啊」—— 行业与战略 </span>
-                        </a>
+                        <a href="/2015/05/25/js-module-loader/" data-toggle="tooltip" data-placement="top" title="Example Post with Code Highlight">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2015/09/22/js-version/" data-toggle="tooltip" data-placement="top" title="「译」ES5, ES6, ES2016, ES.Next: JavaScript 的版本是怎么回事？">
-                        Next<br>
-                        <span>「译」ES5, ES6, ES2016, ES.Next: JavaScript 的版本是怎么回事？</span>
-                        </a>
+                        <a href="/2015/09/22/js-version/" data-toggle="tooltip" data-placement="top" title="Example Post">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
-                <hr style="visibility: hidden;">
+
 
                 
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread">
 
-                    </div>
-                </div>
-                <!-- disqus 评论框 end -->
                 
 
             </div>
@@ -322,135 +241,43 @@
 
                 <!-- Featured Tags -->
                 
-
-
-<section>
-    
-    <h5><a href="/archive/">FEATURED TAGS</a></h5>
-    <div class="tags">
-        
-        
-        
-        </a>
-        
-        
-                <a data-sort="0027" 
-                    href="/archive/?tag=%E7%9F%A5%E4%B9%8E"
-                    title="知乎"
-                    rel="10">知乎</a>
-        
-                <a data-sort="0018" 
-                    href="/archive/?tag=Web"
-                    title="Web"
-                    rel="19">Web</a>
-        
-                <a data-sort="0030" 
-                    href="/archive/?tag=UX%2FUI"
-                    title="UX/UI"
-                    rel="7">UX/UI</a>
-        
-                <a data-sort="0031" 
-                    href="/archive/?tag=%E4%BA%A7%E5%93%81"
-                    title="产品"
-                    rel="6">产品</a>
-        
-                <a data-sort="0031" 
-                    href="/archive/?tag=PWA"
-                    title="PWA"
-                    rel="6">PWA</a>
-        
-                <a data-sort="0033" 
-                    href="/archive/?tag=JavaScript"
-                    title="JavaScript"
-                    rel="4">JavaScript</a>
-        
-                <a data-sort="0033" 
-                    href="/archive/?tag=Slides"
-                    title="Slides"
-                    rel="4">Slides</a>
-        
-                <a data-sort="0034" 
-                    href="/archive/?tag=%E7%94%9F%E6%B4%BB"
-                    title="生活"
-                    rel="3">生活</a>
-        
-                <a data-sort="0034" 
-                    href="/archive/?tag=%E7%AC%94%E8%AE%B0"
-                    title="笔记"
-                    rel="3">笔记</a>
-        
-                <a data-sort="0034" 
-                    href="/archive/?tag=%E8%AF%91"
-                    title="译"
-                    rel="3">译</a>
-        
-                <a data-sort="0034" 
-                    href="/archive/?tag=%E9%98%BF%E9%87%8C"
-                    title="阿里"
-                    rel="3">阿里</a>
-        
-                <a data-sort="0034" 
-                    href="/archive/?tag=%F0%9F%87%AC%F0%9F%87%A7"
-                    title="🇬🇧"
-                    rel="3">🇬🇧</a>
-        
-                <a data-sort="0035" 
-                    href="/archive/?tag=%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6"
-                    title="计算机科学"
-                    rel="2">计算机科学</a>
-        
-                <a data-sort="0035" 
-                    href="/archive/?tag=%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA"
-                    title="计算理论"
-                    rel="2">计算理论</a>
-        
-                <a data-sort="0035" 
-                    href="/archive/?tag=CSS"
-                    title="CSS"
-                    rel="2">CSS</a>
-        
-                <a data-sort="0035" 
-                    href="/archive/?tag=Wechat"
-                    title="Wechat"
-                    rel="2">Wechat</a>
-        
-                <a data-sort="0035" 
-                    href="/archive/?tag=hUX+%E9%9A%8F%E6%83%B3%E5%BD%95"
-                    title="hUX 随想录"
-                    rel="2">hUX 随想录
-    </div>
-</section>
-
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#iOS" title="iOS" rel="2">
+                                    iOS
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Objective-C" title="Objective-C" rel="2">
+                                    Objective-C
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
 
                 <!-- Friends Blog -->
                 
-<hr>
-<h5>FRIENDS</h5>
-<ul class="list-inline">
-  
-  <li><a href="http://mida.re/">乱序</a></li>
-  
-  <li><a href="http://qianduan.guru/">前端外刊评论</a></li>
-  
-  <li><a href="http://lingyu.wang/">天镶的博客</a></li>
-  
-  <li><a href="http://hmqk1995.github.io">Luke 的自留地</a></li>
-  
-  <li><a href="http://ebnbin.com/">Ebn's Blog</a></li>
-  
-  <li><a href="http://blog.smdcn.net">SmdCn's Blog</a></li>
-  
-  <li><a href="https://www.ruoyaowu.com/">David's Game</a></li>
-  
-  <li><a href="http://dhong.co">DHong Say</a></li>
-  
-  <li><a href="http://ingf.github.io/">尹峰以为</a></li>
-  
-  <li><a href="http://xieminis.me/">解旻的博客</a></li>
-  
-</ul>
-
-
             </div>
         </div>
     </div>
@@ -481,20 +308,7 @@
 
 
 
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "hux";
-    var disqus_identifier = "/2015/07/09/js-module-7day";
-    var disqus_url = "http://localhost:4000/2015/07/09/js-module-7day/";
 
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
 
 
 
@@ -512,7 +326,7 @@
 </script>
 <!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
 <script>
-    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
         anchors.options = {
           visible: 'always',
           placement: 'right',
@@ -540,68 +354,55 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <!-- SNS Link -->
-                
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Jackielc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Jack太棒">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
 
 
-<ul class="list-inline text-center">
-
-
-  
-  
-  <li>
-    <a href="https://twitter.com/JackCharo">
-      <span class="fa-stack fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-      </span>
-    </a>
-  </li>
-  
-  
-  <li>
-    <a target="_blank" href="https://www.zhihu.com/people/">
-      <span class="fa-stack fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa  fa-stack-1x fa-inverse">知</i>
-      </span>
-    </a>
-  </li>
-  
-  
-  <li>
-    <a target="_blank" href="http://weibo.com/Jack太棒">
-      <span class="fa-stack fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-      </span>
-    </a>
-  </li>
-  
-  
-  
-  <li>
-    <a target="_blank" href="https://github.com/Jackielc">
-      <span class="fa-stack fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-      </span>
-    </a>
-  </li>
-  
-  
-</ul>
-
-                <p class="copyright text-muted">
-                    Copyright &copy; Jackchao Blog 2018
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jackielc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <!-- <p class="copyright text-muted">
+                    Copyright &copy; JACK CAO 2018
                     <br>
-                    Powered by <a href="http://huangxuan.me">Hux Blog</a> |
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe
                         style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
                         src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
                     </iframe>
-                </p>
+                </p> -->
             </div>
         </div>
     </div>
@@ -611,16 +412,10 @@
 <script src="/js/jquery.min.js "></script>
 
 <!-- Bootstrap Core JavaScript -->
-<!-- Currently, only navbar scroll-down effect at desktop still depends on this -->
 <script src="/js/bootstrap.min.js "></script>
 
 <!-- Custom Theme JavaScript -->
 <script src="/js/hux-blog.min.js "></script>
-
-<!-- Service Worker -->
-
-<script src="/js/snackbar.js "></script>
-<script src="/js/sw-registration.js "></script>
 
 
 <!-- async load function -->
@@ -635,15 +430,14 @@
     }
 </script>
 
-<!--
-     Because of the native support for backtick-style fenced code blocks
-     right within the Markdown is landed in Github Pages,
-     From V1.6, There is no need for Highlight.js,
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
      so Huxblog drops it officially.
 
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
-     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
 -->
 <!--
     <script>
@@ -655,12 +449,23 @@
 -->
 
 
-
-
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
 
 <!--fastClick.js -->
 <script>
-    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
         var $nav = document.querySelector("nav");
         if($nav) FastClick.attach($nav);
     })
@@ -669,32 +474,9 @@
 
 <!-- Google Analytics -->
 
-<script>
-    // dynamic User by Hux
-    var _gaId = 'UA-49627206-1';
-    var _gaDomain = 'huangxuan.me';
-
-    // Originial
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', _gaId, _gaDomain);
-    ga('send', 'pageview');
-</script>
-
 
 
 <!-- Baidu Tongji -->
-
-
-
-<!-- Side Catalog -->
-
-
-
-<!-- Multi-Lingual -->
 
 
 
