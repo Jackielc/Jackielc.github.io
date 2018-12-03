@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 03 Dec 2018 10:11:57 +0800</pubDate>
-    <lastBuildDate>Mon, 03 Dec 2018 10:11:57 +0800</lastBuildDate>
+    <pubDate>Mon, 03 Dec 2018 14:25:50 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Dec 2018 14:25:50 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -258,14 +258,16 @@ static NSTimeInterval const CustomURLCacheExpirationInterval = 600;
 &lt;h5 id=&quot;读写&quot;&gt;读写&lt;/h5&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;Markdown是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式。&lt;/p&gt;
+  &lt;p&gt;Markdown是一种轻量级标记语言，它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML（或者HTML）文档”。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;Markdown的语法简洁明了、学习容易，而且功能比纯文本更强，因此有很多人用它写博客。&lt;/p&gt;
+  &lt;p&gt;由于Markdown的轻量化、易读易写特性，并且对于图片，图表、数学式都有支持，目前许多网站都广泛使用 Markdown 来撰写帮助文档或是用于论坛上发表消息。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;div style=&quot;text-align: right; color:gray; font-style:italic&quot;&gt; -- 摘自百度百科 &lt;/div&gt;
+&lt;div style=&quot;text-align: right; color:gray; font-style:italic&quot;&gt; 
+  &lt;a href=&quot;http://www.w3school.com.cn&quot;&gt;-- 摘自维基百科 &lt;/a&gt;
+&lt;/div&gt;
 
 &lt;p&gt;而且&lt;code class=&quot;highlighter-rouge&quot;&gt;Jekyll&lt;/code&gt;自带&lt;code class=&quot;highlighter-rouge&quot;&gt;markdown&lt;/code&gt;解析器，直接把&lt;code class=&quot;highlighter-rouge&quot;&gt;markdown&lt;/code&gt;文本转换为&lt;code class=&quot;highlighter-rouge&quot;&gt;HTML&lt;/code&gt;，语法还要多学习。&lt;/p&gt;
 

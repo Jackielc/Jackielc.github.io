@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Welcome to Jackcao Blog"
-subtitle:   " \"Hello World, Hello Blog\""
 # date:       2018-11-29 19:00:00
 author:     "Jackcao"
 header-img: "img/post-bg-20181129.jpg"
@@ -30,7 +29,7 @@ tags:
 ---
 
 ## 正文
-
+        
 ##### 从0到1
 
 最近也比较忙，没有太多时间去做，算下来断断续续搭建这个网站大概用了三天时间。之前因为兴趣也做过服务器，了解过网站搭建流程，所以在这个过程中并没有碰到问题。BTW:`Jekyll`是个很强大的工具！
@@ -49,11 +48,13 @@ tags:
 
 ##### 读写
 
-> Markdown是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式。
+> Markdown是一种轻量级标记语言，它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML（或者HTML）文档”。
 
-> Markdown的语法简洁明了、学习容易，而且功能比纯文本更强，因此有很多人用它写博客。
+> 由于Markdown的轻量化、易读易写特性，并且对于图片，图表、数学式都有支持，目前许多网站都广泛使用 Markdown 来撰写帮助文档或是用于论坛上发表消息。
 
-<div style="text-align: right; color:gray; font-style:italic" > -- 摘自百度百科 </div>
+<div style="text-align: right; color:gray; font-style:italic"> 
+  <a href="http://www.w3school.com.cn">-- 摘自维基百科 </a>
+</div>
 
 而且`Jekyll`自带`markdown`解析器，直接把`markdown`文本转换为`HTML`，语法还要多学习。
 
