@@ -5,26 +5,21 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 30 Nov 2018 18:19:48 +0800</pubDate>
-    <lastBuildDate>Fri, 30 Nov 2018 18:19:48 +0800</lastBuildDate>
+    <pubDate>Mon, 03 Dec 2018 10:11:57 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Dec 2018 10:11:57 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
         <title>AFNetWorking是如何进行数据缓存的?</title>
         <description>&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h1 id=&quot;前言&quot;&gt;前言&lt;/h1&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;16年翻译的一篇关于AFNetWorking的文章，现在从Github搬运了过来&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;16年翻译的一篇关于AFNetWorking的文章，现在从Github搬运了过来&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;a href=&quot;http://blog.originate.com/blog/2014/02/20/afimagecache-vs-nsurlcache/&quot;&gt;原文－Tim Brandt《How Does Caching Work in AFNetworking? : AFImageCache &amp;amp; NSUrlCache Explained》&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h1 id=&quot;正文&quot;&gt;正文&lt;/h1&gt;
 
 &lt;p&gt;  如果你是一个正在使用由&lt;a href=&quot;https://github.com/mattt&quot;&gt;Matt Thompson&lt;/a&gt;开发的网络库 &lt;code class=&quot;highlighter-rouge&quot;&gt;AFNetWorking&lt;/code&gt;(如果你还没有使用,那你还在等什么?)的iOS开发者,也许你一直很好奇和困惑它的缓存机制,并且想要了解如何更好地充分利用它?&lt;/p&gt;
@@ -199,7 +194,7 @@ static NSTimeInterval const CustomURLCacheExpirationInterval = 600;
                                               diskPath:nil];
 [NSURLCache setSharedURLCache:sharedCache];
 &lt;/code&gt;&lt;/pre&gt;
-&lt;hr /&gt;
+
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
@@ -224,72 +219,63 @@ static NSTimeInterval const CustomURLCacheExpirationInterval = 600;
     
       <item>
         <title>Welcome to Jackcao Blog</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;“Yeah It’s on. ”&lt;/p&gt;
-&lt;/blockquote&gt;
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
 
-&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;在2018年的尾巴上，我开通了这个Blog。&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;Jackcao 的 Blog 就这么开通了。&lt;/p&gt;
+&lt;p&gt;一直想拥有一个属于自己的空间去记录学习，记录生活，却由于种种原因并没有去真正的实践起来。&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;#build&quot;&gt;跳过废话，直接看技术实现 &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我这几年里也尝试过&lt;a href=&quot;https://www.jianshu.com&quot;&gt;简书&lt;/a&gt;，&lt;a href=&quot;https://github.com&quot;&gt;Github&lt;/a&gt;等等，这几个平台虽然并没有像&lt;a href=&quot;https://www.csdn.net&quot;&gt;CSDN&lt;/a&gt;那样凌乱不堪，不过我总有一种寄人篱下的感觉。&lt;/p&gt;
 
-&lt;p&gt;在2018的尾巴 Jackcao 总算有个地方可以好好写点东西了。&lt;/p&gt;
+&lt;p&gt;今年下半年换了份新工作，到现在这半年来经历了很多事，而且愈发迷茫起来，渐渐地认识到自己有很多不足之处却没办法一下子改变，尤其是在国内这种大环境下，变的很浮躁，渐渐地对自己之前的人生规划抱有怀疑的态度。&lt;/p&gt;
 
-&lt;p&gt;作为一个程序员， Blog 这种轮子要是挂在大众博客程序上就太没意思了。一是觉得大部分 Blog 服务都太丑，二是觉得不能随便定制不好玩。之前因为太懒没有折腾，结果就一直连个写 Blog 的地儿都没有。&lt;/p&gt;
+&lt;p&gt;入了程序员这行，你就要不停地去学习，不停地去思考，去提高自己，不能让自己陷入舒适区，舒适区呆久了，人也就废了。&lt;/p&gt;
 
-&lt;p&gt;在玩了一段时间知乎之后，答题的快感又激起了我开博客的冲动。之前的&lt;a href=&quot;https://github.com/Jackielc&quot;&gt;个人网站&lt;/a&gt;是作品集形式的（现在集成进来了），并不适合用来写博文，一不做二不休，花一天搞一个吧！&lt;/p&gt;
+&lt;p&gt;现在我把心静下来了，突然发现目标很清晰，兜兜转转还是觉得需要提高一下自己的人生上限，我还很年轻，我还想去做一下”无谓”的”挣扎”。&lt;/p&gt;
 
-&lt;p id=&quot;build&quot;&gt;&lt;/p&gt;
+&lt;p&gt;也有过其他想法，但是现在我觉得做好当下最重要，以后的事就让它随波逐流吧。&lt;/p&gt;
+
 &lt;hr /&gt;
 
 &lt;h2 id=&quot;正文&quot;&gt;正文&lt;/h2&gt;
 
-&lt;p&gt;接下来说说搭建这个博客的技术细节。&lt;/p&gt;
+&lt;h5 id=&quot;从0到1&quot;&gt;从0到1&lt;/h5&gt;
 
-&lt;p&gt;正好之前就有关注过 &lt;a href=&quot;https://pages.github.com/&quot;&gt;GitHub Pages&lt;/a&gt; + &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; 快速 Building Blog 的技术方案，非常轻松时尚。&lt;/p&gt;
+&lt;p&gt;最近也比较忙，没有太多时间去做，算下来断断续续搭建这个网站大概用了三天时间。之前因为兴趣也做过服务器，了解过网站搭建流程，所以在这个过程中并没有碰到问题。BTW:&lt;code class=&quot;highlighter-rouge&quot;&gt;Jekyll&lt;/code&gt;是个很强大的工具！&lt;/p&gt;
 
-&lt;p&gt;其优点非常明显：&lt;/p&gt;
+&lt;h5 id=&quot;域名&quot;&gt;域名&lt;/h5&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Markdown&lt;/strong&gt; 带来的优雅写作体验&lt;/li&gt;
-  &lt;li&gt;非常熟悉的 Git workflow ，&lt;strong&gt;Git Commit 即 Blog Post&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;利用 GitHub Pages 的域名和免费无限空间，不用自己折腾主机
-    &lt;ul&gt;
-      &lt;li&gt;如果需要自定义域名，也只需要简单改改 DNS 加个 CNAME 就好了&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Jekyll 的自定制非常容易，基本就是个模版引擎&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;很多朋友问我为什么不叫&lt;code class=&quot;highlighter-rouge&quot;&gt;Jackcao.ml&lt;/code&gt;，因为我的外国朋友一直称呼我为Jackchao，我也就听习惯了。申请域名的时候，突发奇想觉得把这个用作域名比较好。虽然我现在想改，但也改不掉了……&lt;/p&gt;
 
-&lt;p&gt;本来觉得最大的缺点可能是 GitHub 在国内访问起来太慢，所以第二天一起床就到 GitCafe(Chinese GitHub Copy) 迁移了一个&lt;a href=&quot;http://huxpro.gitcafe.io&quot;&gt;镜像&lt;/a&gt;出来，结果还是巨慢。&lt;/p&gt;
+&lt;h5 id=&quot;服务&quot;&gt;服务&lt;/h5&gt;
 
-&lt;p&gt;哥哥可是个前端好嘛！ 果断开 Chrome DevTool 查了下网络请求，原来是 &lt;strong&gt;pending 在了 Google Fonts&lt;/strong&gt; 上，页面渲染一直被阻塞到请求超时为止，难怪这么慢。&lt;br /&gt;
-忍痛割爱，只好把 Web Fonts 去了（反正超时看到的也只能是 fallback ），果然一下就正常了，而且 GitHub 和 GitCafe 对比并没有感受到明显的速度差异，虽然 github 的 ping 值明显要高一些，达到了 300ms，于是用 DNSPOD 优化了一下速度。&lt;/p&gt;
+&lt;p&gt;服务部署在&lt;code class=&quot;highlighter-rouge&quot;&gt;Github Pages&lt;/code&gt;下面，国内访问的话会慢一点，不过毕竟这是免费的空间🤷‍♂️。&lt;/p&gt;
 
-&lt;hr /&gt;
+&lt;h5 id=&quot;前端&quot;&gt;前端&lt;/h5&gt;
 
-&lt;p&gt;配置的过程中也没遇到什么坑，基本就是 Git 的流程，相当顺手&lt;/p&gt;
+&lt;p&gt;我并不擅长做前端，所以目前的页面是用的是一套模版，然后经过我的修改生成的，模版作者叫做&lt;a href=&quot;https://github.com/huxpro&quot;&gt;Hux&lt;/a&gt;，感谢🙏&lt;/p&gt;
 
-&lt;p&gt;大的 Jekyll 主题上直接 fork 了 Clean Blog（这个主题也相当有名，就不多赘述了。唯一的缺点大概就是没有标签支持，于是我给它补上了。）&lt;/p&gt;
+&lt;h5 id=&quot;读写&quot;&gt;读写&lt;/h5&gt;
 
-&lt;p&gt;本地调试环境需要 &lt;code class=&quot;highlighter-rouge&quot;&gt;gem install jekyll&lt;/code&gt;，结果 rubygem 的源居然被墙了……后来手动改成了我大淘宝的镜像源才成功&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Markdown是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;Theme 的 CSS 是基于 Bootstrap 定制的，看得不爽的地方直接在 Less 里改就好了（平时更习惯 SCSS 些），&lt;strong&gt;不过其实我一直觉得 Bootstrap 在移动端的体验做得相当一般，比我在淘宝参与的团队 CSS 框架差多了……&lt;/strong&gt;所以为了体验，也补了不少 CSS 进去&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Markdown的语法简洁明了、学习容易，而且功能比纯文本更强，因此有很多人用它写博客。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;最后就进入了耗时反而最长的&lt;strong&gt;做图、写字&lt;/strong&gt;阶段，也算是进入了&lt;strong&gt;写博客&lt;/strong&gt;的正轨，因为是类似 Hack Day 的方式去搭这个站的，所以折腾折腾着大半夜就过去了。&lt;/p&gt;
+&lt;div style=&quot;text-align: right; color:gray; font-style:italic&quot;&gt; -- 摘自百度百科 &lt;/div&gt;
 
-&lt;p&gt;第二天考虑中文字体的渲染，fork 了 &lt;a href=&quot;http://www.typeisbeautiful.com/&quot;&gt;Type is Beautiful&lt;/a&gt; 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;font&lt;/code&gt; CSS，调整了字号，适配了 Win 的渣渲染，中英文混排效果好多了。&lt;/p&gt;
+&lt;p&gt;而且&lt;code class=&quot;highlighter-rouge&quot;&gt;Jekyll&lt;/code&gt;自带&lt;code class=&quot;highlighter-rouge&quot;&gt;markdown&lt;/code&gt;解析器，直接把&lt;code class=&quot;highlighter-rouge&quot;&gt;markdown&lt;/code&gt;文本转换为&lt;code class=&quot;highlighter-rouge&quot;&gt;HTML&lt;/code&gt;，语法还要多学习。&lt;/p&gt;
 
-&lt;h2 id=&quot;后记&quot;&gt;后记&lt;/h2&gt;
+&lt;h2 id=&quot;结语&quot;&gt;结语&lt;/h2&gt;
 
-&lt;p&gt;回顾这个博客的诞生，纯粹是出于个人兴趣。在知乎相关问题上回答并获得一定的 star 后，我决定把这个博客主题当作一个小小的开源项目来维护。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;这个博客会一直记录自己的学习和生活，记录一些学习上的总结，记录自己经历的事，也算是监督和敦促自己，希望自己会坚持下去。&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;在经历 v1.0 - v1.5 的蜕变后，这个博客主题愈发完整，不但增加了诸多 UI 层的优化（opinionated）；在代码层面，更加丰富的配置项也使得这个主题拥有了更好的灵活性与可拓展性。而作为一个开源项目，我也积极的为其完善文档与解决 issue。&lt;/p&gt;
+&lt;p&gt;👋👋&lt;/p&gt;
 
-&lt;p&gt;如果你恰好逛到了这里，希望你也能喜欢这个博客主题。&lt;/p&gt;
-
-&lt;p&gt;—— Jackcao 后记于 2018.11.30&lt;/p&gt;
+&lt;p&gt;—— Jackcao 后记于 2018.11.29&lt;/p&gt;
 </description>
         <pubDate>Thu, 29 Nov 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/11/29/hello-2018/</link>
