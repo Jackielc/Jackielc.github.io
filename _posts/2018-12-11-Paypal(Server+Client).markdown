@@ -28,20 +28,21 @@ tags:
 ![post-paypal-warning](/img/in-post/in-post-201811/post-paypal-warning.png)
 
 什么意思呢？
-> Paypal的意思是,对于新的接入官方不太推荐你去接入原生的SDK,建议接入BrainTree和Express checkout,
+> Paypal的意思是，如果有任何高级功能(如直接信用卡流程)不被批准用于新的集成。如果你在SDK被弃用之前已经集成，你仍然可以使用，但是PayPal不鼓励任何新的集成。Paypal建议接入BrainTree和Express checkout。
 
 什么是[BrainTree](https://www.braintreepayments.com)?
-> Paypal旗下的聚合支付方式,包含很多种支付方式(Paypal、信用卡、Apple Pay...)
+> Paypal旗下的聚合支付方式,包含很多种支付方式(Paypal、信用卡、Apple Pay...)。
 
 什么是[Express checkout](https://developer.paypal.com/docs/checkout/)?
-> 镶嵌在Webview中的Paypal支付方式,订单支付在客户端完成
+> Webview中的Paypal支付方式，订单支付在客户端完成。
 
 **我对比了一下这三种方式,最后决定使用原生的SDK,原因如下**
-1. 后端已经为Web提前接入了原生的SDK,如果要切换到BrainTree,需要增加额外的代码。
+1. 后端已经为Web提前接入了原生的SDK，如果要切换到BrainTree，需要增加额外的代码。
 2. BrainTree比较重，相对于原生的SDK。
 3. Express checkout界面风格和我们的App风格差距太大，需要自定义。
-4. 我们需要原生的体验,基于HTML的操作行为,体验不太好。
+4. 我们需要原生的体验,基于HTML的操作行为，体验不太好。
 5. 虽然官方不推荐使用SDK，但我觉得原因主要是推广BrainTree。
+6. 我们目前不使用Paypal信用卡支付。
 
 **虽然原生SDK的文档说明很模糊，甚至可以说过时，但是有了上面的理由，并不能阻止我使用它。**
 
@@ -53,7 +54,7 @@ tags:
 * Single Payment。
 * Future Payments。
 
-**由于Single Payment的支付行为在客户端,所以被我们弃用。Future Payments的支付行为只需要用户在客户端完成授权,之后的支付行为完全由后端代理。所以最后我们选择了后者**。
+**由于Single Payment的支付行为在客户端,所以被我们弃用。Future Payments的支付行为只需要用户在客户端完成授权，之后的支付行为完全由后端代理。所以最后我们选择了后者。**
 
 ### 支付流程
 
@@ -71,5 +72,5 @@ tags:
  → 扣款成功，完成支付<br>
  → 通知客户端支付结果<br>
 
-**客户端文档 [iOS开发文档](https://github.com/paypal/PayPal-iOS-SDK/blob/master/docs/future_payments_mobile.md)、[Android开发文档](https://github.com/paypal/PayPal-Android-SDK/blob/master/docs/future_payments_mobile.md),移动端平台的接入步骤大致相同.**
+**客户端文档 [iOS开发文档](https://github.com/paypal/PayPal-iOS-SDK/blob/master/docs/future_payments_mobile.md)、[Android开发文档](https://github.com/paypal/PayPal-Android-SDK/blob/master/docs/future_payments_mobile.md)，移动端平台的接入步骤大致相同。**
 **服务端文档 [Curl示例](https://github.com/paypal/PayPal-Android-SDK/blob/master/docs/future_payments_server.md)**
