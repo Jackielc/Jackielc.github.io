@@ -25,7 +25,7 @@ tags:
 
 打开[Paypal开发者](https://developer.paypal.com/docs/integration/mobile/ios-integration-guide/)网站,映入眼帘的是
 
-![post-paypal-warning](/img/in-post/in-post-201811/post-paypal-warning.png)
+![post-paypal-warning](/img/in-post/in-post-2018/post-paypal-warning.png)
 
 什么意思呢？
 > Paypal的意思是，如果有任何高级功能(如直接信用卡流程)不被批准用于新的集成。如果你在SDK被弃用之前已经集成，你仍然可以使用，但是PayPal不鼓励任何新的集成。Paypal建议接入BrainTree和Express checkout。

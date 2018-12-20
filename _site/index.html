@@ -129,9 +129,9 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
                 <div class="site-heading">
-                    <h1>Jackcao</h1>
+                    <!-- <h1>Jackcao</h1> -->
                     <!--<hr class="small">-->
-                    <span class="subheading">Here is my creations.</span>
+                    <span style="font-size:26px; font-weight: 500">Welcome to jackcao's workspace</span>
                 </div>
             </div>
         </div>
@@ -154,6 +154,36 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/12/20/Runtime(alloc+init)/">
+        <h2 class="post-title">
+            alloc和init
+        </h2>
+        
+        <h3 class="post-subtitle">
+            Runtime源码阅读
+        </h3>
+        
+        <div class="post-content-preview">
+            前言
+最近在读Runtime的源代码，有很多疑问和心得，特此记录
+
+
+
+正文
+
+NSObject
+在Objective-C中，除去一些基本的数据类型之外，几乎所有的类都是NSObject的子类。继承NSObject的子类都可以访问Runtime的接口，并赋予其Objective-C对象的基本行为和能力。
+
+  The root class of most Objective-C class ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Jackcao on December 20, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/12/11/Paypal(Server+Client)/">
         <h2 class="post-title">
             关于Paypal支付
@@ -166,7 +196,7 @@
         <div class="post-content-preview">
             
 前言
-最近要使用Paypal用于跨境的支付,这几天都在调研服务端和客户端的支付行为,在这个过程中过程中遇到了很多的问题,特此记录
+这几天都在调研服务端和客户端的支付行为,因为要使用Paypal用于跨境的支付
 
 
 正文
@@ -179,12 +209,7 @@
 
 什么意思呢？
 
-  Paypal的意思是,对于新的接入官方不太推荐你去接入原生的SDK,建议接入BrainTree和Express checkout,
-
-
-什么是BrainTree?
-
-  ...
+  Paypal的意思是，如果有任何高级功能(如直接信用卡流程)不被批准用于新的集成。如果你在SDK被弃用之前已经集成，你仍然可以使用，但是PayPal不鼓励任何新的集成。Paypal建议接入BrainTree和Expr...
         </div>
     </a>
     <p class="post-meta">
@@ -278,15 +303,17 @@
                             
                         
                             
-                                <a href="/tags/#iOS" title="iOS" rel="3">
+                                <a href="/tags/#iOS" title="iOS" rel="4">
                                     iOS
                                 </a>
                             
                         
                             
-                                <a href="/tags/#Objective-C" title="Objective-C" rel="3">
+                                <a href="/tags/#Objective-C" title="Objective-C" rel="4">
                                     Objective-C
                                 </a>
+                            
+                        
                             
                         
                             
