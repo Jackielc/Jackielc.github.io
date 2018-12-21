@@ -219,8 +219,9 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
 ```
     cls->instanceSize(extraBytes); // extraBytes为额外需要的bytes
 ```
-`instanceSize`的内部实现会进行字节对齐，而且会对小于16`bytes`的对象，强制给予16`bytes`，因为`Apple`称
+`instanceSize`的内部实现会进行字节对齐，而且会对小于16`bytes`的对象，强制给予16`bytes`。因为`Apple`称
 > ***CF(CoreFoundation) requires all objects be at least 16 bytes.*** //CoreFoundation 要求所有的对象大小至少为16字节
+> ***结构体大小需是最大成员变量大小的整数倍。*** 
 
 我们不需要`NSZone`而且`fast`为`ture`，所以我们会直接调用`calloc`进行内存分配,并且初始化`isa`指针
 ```
@@ -302,7 +303,6 @@ _objc_rootInit(id obj)
 我们回头再来看Apple说过的话
 > ***init***: Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated. //由子类实现，以便在为新对象(接收方)分配内存之后立即初始化该对象。
 
-
 通过`runtime`的源代码我们可以知道，`NSObject`在`init`函数中并没有做任何操作，它只是返回了`self`。其实`Apple`在开发文档中说的很明白，`init`函数是留给子类重载的，子类可以在`init`里做一些初始化的操作，比如初始化一些变量、对象...来给实例一些默认的行为和能力。因为子类可以自定义`init`函数的实现，所有在某些情况下我们也可以在`init`函数中返回一个替代的实例，也可以在因为某些原因无法创建实例而返回空值，且不需要抛出异常，但是在`init`函数中必须invoke父类的`init`函数，以此来保证子类可以正确的初始化实例。
 
 ### new函数
@@ -318,5 +318,89 @@ _objc_rootInit(id obj)
 ```
 但是我们也可以联想到一些问题，那就是如果子类自定义了构造函数，并在自定义的构造函数中规定了一些能力和行为，我们这时如果使用`new`函数来进行初始化工作，那么问题就出现了：`new`函数内部调用的还是`init`函数，而并不是子类自定义的构造函数，那么就会导致用`new`函数生成的实例并不具备这些能力和行为，必然会导致一系列的问题产生。
 
+### 对象内存大小
+我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存。而指针只需要8`bytes`，上面说到，Apple在64位架构下强制返回了16`bytes`，这就解释了为什么下面两段代码返回结果不同的原因
+```
+    NSObject *objc = [[NSObject alloc] init];
+    NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([objc class]));
+    NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const void *)(objc)));
+
+    //objc对象实际所需的内存大小: 8
+    //objc对象实际占用的内存大小: 16
+```
+
+而且根据字节对齐的规则
+> ***结构体大小需是最大成员变量大小的整数倍。*** 
+
+我们可以推算出自定义类的内存布局的内存占用，我们新建一个`NSObject`的子类`SomeClass`，并转换为C++代码
+```
+@interface SomeClass: NSObject
+{
+    int count;
+}
+@end
+
+// 转换为C++代码
+struct SomeClass_IMPL {
+    struct NSObject_IMPL NSObject_IVARS; //isa指针
+    int count;
+};
+
+struct NSObject_IMPL {
+    Class isa; //指向struct objc_class结构体类型的指针
+};
+
+```
+通过结构体`SomeClass_IMPL`我们可以看到，该结构体有两个成员变量:一个`isa`指针和`int`型变量，在64位架构下`isa`指针占用8`bytes`、`int`型占用4`bytes`。所以最终结果为8+4=12`bytes`
+，所以`SomeClass`的实例对象需要12`bytes`的内存，由于12`bytes`小于16`bytes`，所以系统最后会分配给该对象16`bytes`。
+
+```
+    SomeClass *instance = [[SomeClass alloc] init];
+    NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([instance class]));
+    NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const void *)(instance)));
+
+    //objc对象理论所需的内存大小: 16
+    //objc对象实际占用的内存大小: 16
+```
+
+如果我们再增加一个`double`型的成员变量。
+```
+@interface SomeClass: NSObject
+{
+    int count;
+    double width;
+}
+@end
+
+// 转换为C++代码
+struct SomeClass_IMPL {
+    struct NSObject_IMPL NSObject_IVARS; //isa指针
+    int count;
+    double width;
+};
+
+struct NSObject_IMPL {
+    Class isa; //指向struct objc_class结构体类型的指针
+};
+```
+`double`型在64位架构下占用8`bytes`，12+8=20`bytes`，20`bytes`已经大于16`bytes`，由于结构体`SomeClass_IMPL`中最大的成员变量为`isa`指针，该`isa`占用8`bytes`，然后根据字节对齐规则，`SomeClass`的实例对象最终的占用内存需是8的倍数，所需24`bytes`，占用内存24`bytes`。我们可以来验证一下结果
+```
+    SomeClass *instance = [[SomeClass alloc] init];
+    NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([instance class]));
+    NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const void *)(instance)));
+
+    //objc对象理论所需的内存大小: 24
+    //objc对象实际占用的内存大小: 32
+```
+
+系统结果和我们的预期不符合，为什么？
+
+> iOS中的malloc函数分配内存空间时，是根据bucket来分配的。bucket的大小是16的倍数
+
+可以看出系统是按16的倍数来分配对象的内存大小的。由于24并不是16的倍数，所以系统取值32，分配内存32`bytes`，这就我什么系统输出和我们预期不符的原因。
+
 ### So
 **`alloc`函数负责分配内存并返回地址给指针，`init`则更多的关注于初始化实例的行为和能力**
+
+参考
+![post-data-bytes](/img/in-post/in-post-2018/post-data-bytes.png)
