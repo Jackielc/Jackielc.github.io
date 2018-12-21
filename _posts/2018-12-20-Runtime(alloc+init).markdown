@@ -41,7 +41,7 @@ SomeClass *instance = [[SomeClass alloc]init];
 
 > The Objective-C runtime is a runtime library that provides support for the dynamic properties of the Objective-C language, and as such is linked to by all Objective-C apps. Objective-C runtime library support functions are implemented in the shared library found at /usr/lib/libobjc.A.dylib.
 
-**一句话总结：Runtime是Objective-C 面向对象和动态机制的基石。**
+**一句话总结：`Runtime`是`Objective-C`面向对象和动态机制的基石。**
 
 ### 下载和编译Runtime
 `Runtime`目前是开源的，开发者可以自由下载。进入[Apple Open Source](https://opensource.apple.com/source/)，按下`cmd`+`f`并输入`objc4`，然后定位并点击进入目录，will see it
