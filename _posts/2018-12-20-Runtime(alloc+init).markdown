@@ -25,7 +25,7 @@ tags:
 ### alloc 和 init
 初始化一个继承于NSObject的对象时我们一般都会这样做。
 ```Objective-C
- SomeClass *instance = [[SomeClass alloc]init];
+SomeClass *instance = [[SomeClass alloc]init];
 ```
 alloc和init有什么用？Apple解释称
 > **alloc**: Returns a new instance of the receiving class. // 返回该类的一个新的实例对象
@@ -115,7 +115,7 @@ callAlloc(Class cls, bool checkNil, bool allocWithZone=false)
 ```
 `callAlloc`方法中有三个参数,`cls`为当前的调用类，`checkNil`为判空，`allocWithZone`表示是否实现了`allocWithZone`，`=false`代表默认是没有实现的。`NSZone`其实已经在Objective-C中被弃用了，为什么会被保留下来，Apple解释称`allocWithZone`的存在是由于历史原因才会被保留下来。
 ```
-    if (slowpath(checkNil && !cls)) return nil;
+if (slowpath(checkNil && !cls)) return nil;
 ```
 进入方法内部，会发现一个判空的宏，叫做`slowpath`，计算机术语叫做慢路径，表示条件很可能为`false`，让编译器做优化，以此提升性能，虽然是一个很小的优化，但是对于alloc这样在应用中会被大量调用的方法来说，这样做还是很值得的。
 
@@ -130,13 +130,13 @@ callAlloc(Class cls, bool checkNil, bool allocWithZone=false)
 表示当前的`Objective-C`版本为2.0才能进入，一般情况下在我们的开发环境中`Objective-C`的版本都是2.0。
 条件成立，然后进入
 ```
-    fastpath(!cls->ISA()->hasCustomAWZ())
+fastpath(!cls->ISA()->hasCustomAWZ())
 ```
 `fastpath`为快路径，表示结果大概率为真，`cls->ISA()->hasCustomAWZ()`表示当前类是否存在`alloc`和`allocWithZone`的实现，根据其中的注释，这个判断操作返回的结果大概率为`true`。
 
 紧接着进入
 ```
-    if (fastpath(cls->canAllocFast()))
+if (fastpath(cls->canAllocFast()))
 ```
 从字面意思来讲，这个方法应该是判断当前类是否可以快速地进行`alloc`操作，不过当我进入`canAllocFast`的方法内部时，我发现这个方法永远返回的是`false`，所以最后会进入`else`分支
 ```
@@ -219,18 +219,18 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
 
 然后获取对象大小
 ```
-    cls->instanceSize(extraBytes); // extraBytes为额外需要的bytes
+cls->instanceSize(extraBytes); // extraBytes为额外需要的bytes
 ```
 `instanceSize`的内部实现会进行字节对齐，而且会对小于16`bytes`的对象，强制给予16`bytes`。因为`Apple`称
 > ***CF(CoreFoundation) requires all objects be at least 16 bytes.*** //CoreFoundation 要求所有的对象大小至少为16字节
 
 我们不需要`NSZone`而且`fast`为`ture`，所以我们会直接调用`calloc`进行内存分配,并且初始化`isa`指针
 ```
-    if (!zone  &&  fast) {
-        obj = (id)calloc(1, size);
-        if (!obj) return nil;
-        obj->initInstanceIsa(cls, hasCxxDtor);
-    } 
+if (!zone  &&  fast) {
+    obj = (id)calloc(1, size);
+    if (!obj) return nil;
+    obj->initInstanceIsa(cls, hasCxxDtor);
+} 
 ```
 值得一提的是在`initInstanceIsa`方法中会判断当前类是否支持`TAGGED POINTERS`(除去一些外部因素，64位机器都支持)：
 1. ***Tagged Pointer*** 是Apple在2013年推出的技术。因为在64位系统架构下，指针变量由32位增加到64位，这意味着对于一些对象(`NSNumber`、`NSDate`等)来说可能会存在存储浪费的问题，所以Apple决定将一些比较小的数据直接存储在指针变量中，这些指针变量就叫做`TAGGED POINTERS`。
@@ -404,4 +404,4 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 可以看出系统是按16的倍数来分配对象的内存大小的。由于24并不是16的倍数，所以系统取值32，固分配内存32`bytes`，这就我什么系统输出和我们预期不符的原因。
 
 ### So
-**`alloc`函数负责分配内存并返回地址给指针，`init`则更多的关注于初始化实例的行为和能力，对象内存是根据一系列的规则来分配的。**
+**`alloc`函数负责分配内存并返回地址给指针，`init`则更多的关注于初始化实例的行为和能力，对象内存是根据CF Require、字节对齐、bucket等规则来分配的。**
