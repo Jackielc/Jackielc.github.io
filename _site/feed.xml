@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 21 Dec 2018 11:29:08 +0800</pubDate>
-    <lastBuildDate>Fri, 21 Dec 2018 11:29:08 +0800</lastBuildDate>
+    <pubDate>Fri, 21 Dec 2018 13:57:28 +0800</pubDate>
+    <lastBuildDate>Fri, 21 Dec 2018 13:57:28 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -49,6 +49,8 @@
 &lt;blockquote&gt;
   &lt;p&gt;The Objective-C runtime is a runtime library that provides support for the dynamic properties of the Objective-C language, and as such is linked to by all Objective-C apps. Objective-C runtime library support functions are implemented in the shared library found at /usr/lib/libobjc.A.dylib.&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;一句话总结：Runtime是Objective-C 面向对象和动态机制的基石。&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;下载和编译runtime&quot;&gt;下载和编译Runtime&lt;/h3&gt;
 &lt;p&gt;Runtime目前是开源的，开发者可以自由下载。进入&lt;a href=&quot;https://opensource.apple.com/source/&quot;&gt;Apple Open Source&lt;/a&gt;，按下&lt;code class=&quot;highlighter-rouge&quot;&gt;cmd&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt;并输入&lt;code class=&quot;highlighter-rouge&quot;&gt;objc4&lt;/code&gt;，然后定位并点击进入目录，will see it
@@ -116,7 +118,7 @@ callAlloc(Class cls, bool checkNil, bool allocWithZone=false)
     return [cls alloc];
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;callAlooc&lt;/code&gt;方法中有三个参数,&lt;code class=&quot;highlighter-rouge&quot;&gt;cls&lt;/code&gt;为当前的调用类，&lt;code class=&quot;highlighter-rouge&quot;&gt;checkNil&lt;/code&gt;为判空，&lt;code class=&quot;highlighter-rouge&quot;&gt;allocWithZone&lt;/code&gt;表示是否实现了&lt;code class=&quot;highlighter-rouge&quot;&gt;allocWithZone&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;=false&lt;/code&gt;代表默认是没有实现的。&lt;code class=&quot;highlighter-rouge&quot;&gt;NSZone&lt;/code&gt;其实已经在Objective-C中被弃用了，为什么会被保留下来，Apple解释称&lt;code class=&quot;highlighter-rouge&quot;&gt;allocWithZone&lt;/code&gt;的存在是由于历史原因才会被保留下来。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;callAlloc&lt;/code&gt;方法中有三个参数,&lt;code class=&quot;highlighter-rouge&quot;&gt;cls&lt;/code&gt;为当前的调用类，&lt;code class=&quot;highlighter-rouge&quot;&gt;checkNil&lt;/code&gt;为判空，&lt;code class=&quot;highlighter-rouge&quot;&gt;allocWithZone&lt;/code&gt;表示是否实现了&lt;code class=&quot;highlighter-rouge&quot;&gt;allocWithZone&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;=false&lt;/code&gt;代表默认是没有实现的。&lt;code class=&quot;highlighter-rouge&quot;&gt;NSZone&lt;/code&gt;其实已经在Objective-C中被弃用了，为什么会被保留下来，Apple解释称&lt;code class=&quot;highlighter-rouge&quot;&gt;allocWithZone&lt;/code&gt;的存在是由于历史原因才会被保留下来。&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    if (slowpath(checkNil &amp;amp;&amp;amp; !cls)) return nil;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;进入方法内部，会发现一个判空的宏，叫做&lt;code class=&quot;highlighter-rouge&quot;&gt;slowpath&lt;/code&gt;，计算机术语叫做慢路径，表示条件很可能为&lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;，让编译器做优化，以此提升性能，虽然是一个很小的优化，但是对于alloc这样在应用中会被大量调用的方法来说，这样做还是很值得的。&lt;/p&gt;
@@ -218,8 +220,7 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;instanceSize&lt;/code&gt;的内部实现会进行字节对齐，而且会对小于16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的对象，强制给予16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;。因为&lt;code class=&quot;highlighter-rouge&quot;&gt;Apple&lt;/code&gt;称&lt;/p&gt;
 &lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;&lt;em&gt;CF(CoreFoundation) requires all objects be at least 16 bytes.&lt;/em&gt;&lt;/strong&gt; //CoreFoundation 要求所有的对象大小至少为16字节
-&lt;strong&gt;&lt;em&gt;结构体大小需是最大成员变量大小的整数倍。&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;em&gt;CF(CoreFoundation) requires all objects be at least 16 bytes.&lt;/em&gt;&lt;/strong&gt; //CoreFoundation 要求所有的对象大小至少为16字节&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;我们不需要&lt;code class=&quot;highlighter-rouge&quot;&gt;NSZone&lt;/code&gt;而且&lt;code class=&quot;highlighter-rouge&quot;&gt;fast&lt;/code&gt;为&lt;code class=&quot;highlighter-rouge&quot;&gt;ture&lt;/code&gt;，所以我们会直接调用&lt;code class=&quot;highlighter-rouge&quot;&gt;calloc&lt;/code&gt;进行内存分配,并且初始化&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针&lt;/p&gt;
@@ -302,7 +303,7 @@ _objc_rootInit(id obj)
   &lt;p&gt;&lt;strong&gt;&lt;em&gt;init&lt;/em&gt;&lt;/strong&gt;: Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated. //由子类实现，以便在为新对象(接收方)分配内存之后立即初始化该对象。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;通过&lt;code class=&quot;highlighter-rouge&quot;&gt;runtime&lt;/code&gt;的源代码我们可以知道，&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数中并没有做任何操作，它只是返回了&lt;code class=&quot;highlighter-rouge&quot;&gt;self&lt;/code&gt;。其实&lt;code class=&quot;highlighter-rouge&quot;&gt;Apple&lt;/code&gt;在开发文档中说的很明白，&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数是留给子类重载的，子类可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;里做一些初始化的操作，比如初始化一些变量、对象…来给实例一些默认的行为和能力。因为子类可以自定义&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数的实现，所有在某些情况下我们也可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数中返回一个替代的实例，也可以在因为某些原因无法创建实例而返回空值，且不需要抛出异常，但是在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数中必须invoke父类的&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数，以此来保证子类可以正确的初始化实例。&lt;/p&gt;
+&lt;p&gt;通过&lt;code class=&quot;highlighter-rouge&quot;&gt;Runtime&lt;/code&gt;的源代码我们可以知道，&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数中并没有做任何操作，它只是返回了&lt;code class=&quot;highlighter-rouge&quot;&gt;self&lt;/code&gt;。其实&lt;code class=&quot;highlighter-rouge&quot;&gt;Apple&lt;/code&gt;在开发文档中说的很明白，&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数是留给子类重载的，子类可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;里做一些初始化的操作，比如初始化一些变量、对象…来给实例一些默认的行为和能力。因为子类可以自定义&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数的实现，所有在某些情况下我们也可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数中返回一个替代的实例，也可以在因为某些原因无法创建实例而返回空值，且不需要抛出异常，但是在&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数中必须invoke父类的&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数，以此来保证子类可以正确的初始化实例。&lt;/p&gt;
 
 &lt;h3 id=&quot;new函数&quot;&gt;new函数&lt;/h3&gt;
 &lt;p&gt;一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;的子类去初始化实例时还有另外一种写法，就是invoke &lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt;函数，&lt;/p&gt;
@@ -315,29 +316,24 @@ _objc_rootInit(id obj)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;但是我们也可以联想到一些问题，那就是如果子类自定义了构造函数，并在自定义的构造函数中规定了一些能力和行为，我们这时如果使用&lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt;函数来进行初始化工作，那么问题就出现了：&lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt;函数内部调用的还是&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数，而并不是子类自定义的构造函数，那么就会导致用&lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt;函数生成的实例并不具备这些能力和行为，必然会导致一系列的问题产生。&lt;/p&gt;
 
-&lt;h3 id=&quot;对象内存大小&quot;&gt;对象内存大小&lt;/h3&gt;
-&lt;p&gt;我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存。而指针只需要8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，上面说到，Apple在64位架构下强制返回了16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，这就解释了为什么下面两段代码返回结果不同的原因&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    NSObject *objc = [[NSObject alloc] init];
-    NSLog(@&quot;objc对象实际需要的内存大小: %zd&quot;, class_getInstanceSize([objc class]));
-    NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__bridge const void *)(objc)));
+&lt;h3 id=&quot;对象内存&quot;&gt;对象内存&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/img/in-post/in-post-2018/post-data-bytes.png&quot; alt=&quot;post-data-bytes&quot; /&gt;
+我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，所以一个NSObjec的实例的对象实际大小为8bytes，而在上面的源码中我们可以看到，对于小于16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的对象来说，Apple会强制分配给16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的内存，这就解释了为什么下面两段代码返回结果不同的原因&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSObject *objc = [[NSObject alloc] init];
+NSLog(@&quot;objc对象实际需要的内存大小: %zd&quot;, class_getInstanceSize([objc class]));
+NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__bridge const void *)(objc)));
 
-    //objc对象实际所需的内存大小: 8
-    //objc对象实际占用的内存大小: 16
+//objc对象实际所需的内存大小: 8
+//objc对象实际占用的内存大小: 16
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;
-而且根据字节对齐的规则&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;&lt;em&gt;结构体大小需是最大成员变量大小的整数倍。&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;我们可以推算出自定义类的内存布局的内存占用，我们新建一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;的子类&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;，并转换为C++代码&lt;/p&gt;
+&lt;p&gt;其实我们可以手动推算出自定义类的内存布局的内存占用，新建一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;的子类&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;，并转换为C++代码，如下：&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@interface SomeClass: NSObject
 {
     int count;
 }
 @end
 
-// 转换为C++代码
+// 转换后得到的C++代码
 struct SomeClass_IMPL {
     struct NSObject_IMPL NSObject_IVARS; //isa指针
     int count;
@@ -349,15 +345,20 @@ struct NSObject_IMPL {
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;通过结构体&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass_IMPL&lt;/code&gt;我们可以看到，该结构体有两个成员变量:一个&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针和&lt;code class=&quot;highlighter-rouge&quot;&gt;int&lt;/code&gt;型变量，在64位架构下&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针占用8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;int&lt;/code&gt;型占用4&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;。所以最终结果为8+4=12&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;
-，所以&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;的实例对象需要12&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的内存，由于12&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;小于16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，所以系统最后会分配给该对象16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;。&lt;/p&gt;
+，所以&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;的实例需要12&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的内存，由于12&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;小于16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，所以系统最后会分配给该对象16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，然后我们对比下系统输出：&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    SomeClass *instance = [[SomeClass alloc] init];
-    NSLog(@&quot;objc对象实际需要的内存大小: %zd&quot;, class_getInstanceSize([instance class]));
-    NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__bridge const void *)(instance)));
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SomeClass *instance = [[SomeClass alloc] init];
+NSLog(@&quot;objc对象实际需要的内存大小: %zd&quot;, class_getInstanceSize([instance class]));
+NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__bridge const void *)(instance)));
 
-    //objc对象理论所需的内存大小: 16
-    //objc对象实际占用的内存大小: 16
+//objc对象理论所需的内存大小: 16
+//objc对象实际占用的内存大小: 16
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;然而&lt;code class=&quot;highlighter-rouge&quot;&gt;class_getInstanceSize&lt;/code&gt;输出与我们预期的12&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;不符，为什么？因为字节对齐&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;字节对齐&lt;/strong&gt; :结构体大小需是最大成员变量大小的整数倍。
+在结构体&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass_IMPL&lt;/code&gt;中&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针为最大成员变量，根据字节对齐的规则，对象所需内存为&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针内存大小的倍数，即16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;如果我们再增加一个&lt;code class=&quot;highlighter-rouge&quot;&gt;double&lt;/code&gt;型的成员变量。&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@interface SomeClass: NSObject
@@ -378,28 +379,25 @@ struct NSObject_IMPL {
     Class isa; //指向struct objc_class结构体类型的指针
 };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;double&lt;/code&gt;型在64位架构下占用8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，12+8=20&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，20&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;已经大于16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，由于结构体&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass_IMPL&lt;/code&gt;中最大的成员变量为&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针，该&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;占用8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，然后根据字节对齐规则，&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;的实例对象最终的占用内存需是8的倍数，所需24&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，占用内存24&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;。我们可以来验证一下结果&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    SomeClass *instance = [[SomeClass alloc] init];
-    NSLog(@&quot;objc对象实际需要的内存大小: %zd&quot;, class_getInstanceSize([instance class]));
-    NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__bridge const void *)(instance)));
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;double&lt;/code&gt;型在64位架构下占用8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，12+8=20&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，由于结构体&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass_IMPL&lt;/code&gt;中最大的成员变量为&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针，然后根据字节对齐规则，得出&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;的实例对象所需24&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，占用内存24&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，然后来验证一下结果&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SomeClass *instance = [[SomeClass alloc] init];
+NSLog(@&quot;objc对象实际需要的内存大小: %zd&quot;, class_getInstanceSize([instance class]));
+NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__bridge const void *)(instance)));
 
-    //objc对象理论所需的内存大小: 24
-    //objc对象实际占用的内存大小: 32
+//objc对象理论所需的内存大小: 24
+//objc对象实际占用的内存大小: 32
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;系统结果和我们的预期不符合，为什么？&lt;/p&gt;
+&lt;p&gt;然而系统结果还是和我们的预期不符，这又是为什么？&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;iOS中的malloc函数分配内存空间时，是根据bucket来分配的。bucket的大小是16的倍数&lt;/p&gt;
+  &lt;p&gt;iOS中的&lt;code class=&quot;highlighter-rouge&quot;&gt;malloc&lt;/code&gt;函数分配内存空间时，是根据&lt;code class=&quot;highlighter-rouge&quot;&gt;bucket&lt;/code&gt;来分配的。&lt;code class=&quot;highlighter-rouge&quot;&gt;bucket&lt;/code&gt;的大小是16的倍数。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;可以看出系统是按16的倍数来分配对象的内存大小的。由于24并不是16的倍数，所以系统取值32，分配内存32&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，这就我什么系统输出和我们预期不符的原因。&lt;/p&gt;
+&lt;p&gt;可以看出系统是按16的倍数来分配对象的内存大小的。由于24并不是16的倍数，所以系统取值32，固分配内存32&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，这就我什么系统输出和我们预期不符的原因。&lt;/p&gt;
 
 &lt;h3 id=&quot;so&quot;&gt;So&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;alloc&lt;/code&gt;函数负责分配内存并返回地址给指针，&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;则更多的关注于初始化实例的行为和能力&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;参考
-&lt;img src=&quot;/img/in-post/in-post-2018/post-data-bytes.png&quot; alt=&quot;post-data-bytes&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;alloc&lt;/code&gt;函数负责分配内存并返回地址给指针，&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;则更多的关注于初始化实例的行为和能力，对象内存是根据一系列的规则来分配的。&lt;/strong&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 20 Dec 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/12/20/Runtime(alloc+init)/</link>
