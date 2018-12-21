@@ -308,11 +308,11 @@ _objc_rootInit(id obj)
 
 ### new函数
 一个`NSObject`的子类去初始化实例时还有另外一种写法，就是invoke `new`函数，
-```
+```objective-c
  SomeClass *instance = [SomeClass new]
 ```
 在`Runtime`中我们可以发现，`new`函数只是`alloc`和`init`函数的联合调用，和默认的构造函数并无二致。
-```
+```objective-c
 + (id)new {
     return [callAlloc(self, false/*checkNil*/) init];
 }
@@ -331,7 +331,7 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 //objc对象实际占用的内存大小: 16
 ```
 其实我们可以手动推算出自定义类的内存布局的内存占用，新建一个`NSObject`的子类`SomeClass`，并转换为`C++`代码，如下：
-```
+```objective-c
 @interface SomeClass: NSObject
 {
     int count;
@@ -339,7 +339,6 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 @end
 
 // 转换后得到的C++代码
-
 struct SomeClass_IMPL {
     struct NSObject_IMPL NSObject_IVARS; //isa指针
     int count;
@@ -353,7 +352,7 @@ struct NSObject_IMPL {
 通过结构体`SomeClass_IMPL`我们可以看到，该结构体有两个成员变量:一个`isa`指针和`int`型变量，在64位架构下`isa`指针占用8`bytes`、`int`型占用4`bytes`。所以最终结果为8+4=12`bytes`
 ，所以`SomeClass`的实例需要12`bytes`的内存，由于12`bytes`小于16`bytes`，所以系统最后会分配给该对象16`bytes`，然后我们对比下系统输出：
 
-```
+```objective-c
 SomeClass *instance = [[SomeClass alloc] init];
 NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([instance class]));
 NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const void *)(instance)));
@@ -366,7 +365,7 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 在结构体`SomeClass_IMPL`中`isa`指针为最大成员变量，根据字节对齐的规则，对象所需内存为`isa`指针内存大小的倍数，即16`bytes`。
 
 如果我们再增加一个`double`型的成员变量。
-```
+```objective-c
 @interface SomeClass: NSObject
 {
     int count;
@@ -376,17 +375,20 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 
 // 转换为C++代码
 struct SomeClass_IMPL {
-    struct NSObject_IMPL NSObject_IVARS; //isa指针
+    //isa指针
+    struct NSObject_IMPL NSObject_IVARS; 
     int count;
     double width;
 };
 
 struct NSObject_IMPL {
-    Class isa; //指向struct objc_class结构体类型的指针
+    //指向struct objc_class结构体类型的指针
+
+    Class isa; 
 };
 ```
 `double`型在64位架构下占用8`bytes`，12+8=20`bytes`，由于结构体`SomeClass_IMPL`中最大的成员变量为`isa`指针，然后根据字节对齐规则，得出`SomeClass`的实例对象所需24`bytes`，占用内存24`bytes`，然后来验证一下结果
-```
+```objective-c
 SomeClass *instance = [[SomeClass alloc] init];
 NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([instance class]));
 NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const void *)(instance)));
