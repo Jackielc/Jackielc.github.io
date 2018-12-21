@@ -51,7 +51,7 @@ alloc和init有什么用？Apple解释称
 编译是不通过的，编译的整个过程很麻烦，需要补充很多文件，如果图省事可以直接去Github上寻找已经可以编译的版本。
 
 ### 探究调用过程
-新建命名为SomeClass的继承于`NSObject`的类，在`main.m`中初始化，打上断点然后build
+新建名为`SomeClass`的`NSObject`子类，在`main.m`中初始化，打上断点然后build
 ```objective-c
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -321,7 +321,7 @@ _objc_rootInit(id obj)
 
 ### 对象内存
 ![post-data-bytes](/img/in-post/in-post-2018/post-data-bytes.png)
-我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8`bytes`，所以一个NSObjec的实例对象实际大小为8bytes，而在上面的源码中我们可以看到，对于小于16`bytes`的对象来说，Apple会强制分配给16`bytes`的内存，这就解释了为什么下面两段代码返回结果不同的原因
+我们初始化得到的`NSObject`对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8`bytes`，所以一个NSObjec的实例对象实际大小为8`bytes`，而在上面的源码中我们可以看到，对于小于16`bytes`的对象来说，Apple会强制分配给16`bytes`的内存，这就解释了为什么下面两段代码返回结果不同的原因
 ```
 NSObject *objc = [[NSObject alloc] init];
 NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([objc class]));
