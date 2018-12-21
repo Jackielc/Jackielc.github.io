@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 21 Dec 2018 13:57:28 +0800</pubDate>
-    <lastBuildDate>Fri, 21 Dec 2018 13:57:28 +0800</lastBuildDate>
+    <pubDate>Fri, 21 Dec 2018 14:27:26 +0800</pubDate>
+    <lastBuildDate>Fri, 21 Dec 2018 14:27:26 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -53,7 +53,7 @@
 &lt;p&gt;&lt;strong&gt;一句话总结：Runtime是Objective-C 面向对象和动态机制的基石。&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;下载和编译runtime&quot;&gt;下载和编译Runtime&lt;/h3&gt;
-&lt;p&gt;Runtime目前是开源的，开发者可以自由下载。进入&lt;a href=&quot;https://opensource.apple.com/source/&quot;&gt;Apple Open Source&lt;/a&gt;，按下&lt;code class=&quot;highlighter-rouge&quot;&gt;cmd&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt;并输入&lt;code class=&quot;highlighter-rouge&quot;&gt;objc4&lt;/code&gt;，然后定位并点击进入目录，will see it
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Runtime&lt;/code&gt;目前是开源的，开发者可以自由下载。进入&lt;a href=&quot;https://opensource.apple.com/source/&quot;&gt;Apple Open Source&lt;/a&gt;，按下&lt;code class=&quot;highlighter-rouge&quot;&gt;cmd&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt;并输入&lt;code class=&quot;highlighter-rouge&quot;&gt;objc4&lt;/code&gt;，然后定位并点击进入目录，will see it
 &lt;img src=&quot;/img/in-post/in-post-2018/post-runtime-files.png&quot; alt=&quot;post-runtime-files&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;尾数越大的表明版本越新，不过我在这里使用的是&lt;code class=&quot;highlighter-rouge&quot;&gt;objc4-723&lt;/code&gt;版本，虽然Apple有压缩包可以&lt;a href=&quot;https://opensource.apple.com/tarballs/objc4/&quot;&gt;下载&lt;/a&gt;，但是下载的源代码直接进行
@@ -309,7 +309,7 @@ _objc_rootInit(id obj)
 &lt;p&gt;一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;的子类去初始化实例时还有另外一种写法，就是invoke &lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt;函数，&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; SomeClass *instance = [SomeClass new]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;在runtime中我们可以发现，&lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt;函数只是&lt;code class=&quot;highlighter-rouge&quot;&gt;alloc&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数的联合调用，和默认的构造函数并无二致。&lt;/p&gt;
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;Runtime&lt;/code&gt;中我们可以发现，&lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt;函数只是&lt;code class=&quot;highlighter-rouge&quot;&gt;alloc&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;函数的联合调用，和默认的构造函数并无二致。&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (id)new {
     return [callAlloc(self, false/*checkNil*/) init];
 }
@@ -318,7 +318,7 @@ _objc_rootInit(id obj)
 
 &lt;h3 id=&quot;对象内存&quot;&gt;对象内存&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&quot;/img/in-post/in-post-2018/post-data-bytes.png&quot; alt=&quot;post-data-bytes&quot; /&gt;
-我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，所以一个NSObjec的实例的对象实际大小为8bytes，而在上面的源码中我们可以看到，对于小于16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的对象来说，Apple会强制分配给16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的内存，这就解释了为什么下面两段代码返回结果不同的原因&lt;/p&gt;
+我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;，所以一个NSObjec的实例对象实际大小为8bytes，而在上面的源码中我们可以看到，对于小于16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的对象来说，Apple会强制分配给16&lt;code class=&quot;highlighter-rouge&quot;&gt;bytes&lt;/code&gt;的内存，这就解释了为什么下面两段代码返回结果不同的原因&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSObject *objc = [[NSObject alloc] init];
 NSLog(@&quot;objc对象实际需要的内存大小: %zd&quot;, class_getInstanceSize([objc class]));
 NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__bridge const void *)(objc)));
@@ -326,7 +326,7 @@ NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__br
 //objc对象实际所需的内存大小: 8
 //objc对象实际占用的内存大小: 16
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;其实我们可以手动推算出自定义类的内存布局的内存占用，新建一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;的子类&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;，并转换为C++代码，如下：&lt;/p&gt;
+&lt;p&gt;其实我们可以手动推算出自定义类的内存布局的内存占用，新建一个&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;的子类&lt;code class=&quot;highlighter-rouge&quot;&gt;SomeClass&lt;/code&gt;，并转换为&lt;code class=&quot;highlighter-rouge&quot;&gt;C++&lt;/code&gt;代码，如下：&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@interface SomeClass: NSObject
 {
     int count;
@@ -334,6 +334,7 @@ NSLog(@&quot;objc对象实际分配的内存大小: %zd&quot;, malloc_size((__br
 @end
 
 // 转换后得到的C++代码
+
 struct SomeClass_IMPL {
     struct NSObject_IMPL NSObject_IVARS; //isa指针
     int count;

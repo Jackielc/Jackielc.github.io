@@ -330,7 +330,7 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 //objc对象实际所需的内存大小: 8
 //objc对象实际占用的内存大小: 16
 ```
-其实我们可以手动推算出自定义类的内存布局的内存占用，新建一个`NSObject`的子类`SomeClass`，并转换为C++代码，如下：
+其实我们可以手动推算出自定义类的内存布局的内存占用，新建一个`NSObject`的子类`SomeClass`，并转换为`C++`代码，如下：
 ```
 @interface SomeClass: NSObject
 {
@@ -339,6 +339,7 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 @end
 
 // 转换后得到的C++代码
+
 struct SomeClass_IMPL {
     struct NSObject_IMPL NSObject_IVARS; //isa指针
     int count;
