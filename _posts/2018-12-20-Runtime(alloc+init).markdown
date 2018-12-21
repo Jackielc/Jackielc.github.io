@@ -298,10 +298,10 @@ _objc_rootInit(id obj)
 }
 
 ```
-是的，Apple直接给我们返回了对象本身，什么都没做，这时候我们就要思考这个函数存在的意义了。
+是的，系统直接给我们返回了对象本身，什么都没做，这时候我们就要思考这个函数存在的意义了。
 
 ### init函数
-我们回头再来看Apple说过的话
+我们回头再来看`Apple`说过的话
 > ***init***: Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated. //由子类实现，以便在为新对象(接收方)分配内存之后立即初始化该对象。
 
 通过`Runtime`的源代码我们可以知道，`NSObject`在`init`函数中并没有做任何操作，它只是返回了`self`。其实`Apple`在开发文档中说的很明白，`init`函数是留给子类重载的，子类可以在`init`里做一些初始化的操作，比如初始化一些变量、对象...来给实例一些默认的行为和能力。因为子类可以自定义`init`函数的实现，所有在某些情况下我们也可以在`init`函数中返回一个替代的实例，也可以在因为某些原因无法创建实例而返回空值，且不需要抛出异常，但是在`init`函数中必须invoke父类的`init`函数，以此来保证子类可以正确的初始化实例。
@@ -321,7 +321,7 @@ _objc_rootInit(id obj)
 
 ### 对象内存
 ![post-data-bytes](/img/in-post/in-post-2018/post-data-bytes.png)
-我们初始化得到的`NSObject`对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8`bytes`，所以一个NSObjec的实例对象实际大小为8`bytes`，而在上面的源码中我们可以看到，对于小于16`bytes`的对象来说，Apple会强制分配给16`bytes`的内存，这就解释了为什么下面两段代码返回结果不同的原因
+我们初始化得到的`NSObject`对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8`bytes`，所以一个`NSObject`的实例对象实际大小为8`bytes`，而在上面的源码中我们可以看到，对于小于16`bytes`的对象来说，`Apple`会强制分配给16`bytes`的内存，这就解释了为什么下面两段代码返回结果不同的原因
 ```
 NSObject *objc = [[NSObject alloc] init];
 NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([objc class]));
