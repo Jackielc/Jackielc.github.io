@@ -23,19 +23,19 @@ tags:
 > The root class of most Objective-C class hierarchies, from which subclasses inherit a basic interface to the runtime system and the ability to behave as Objective-C objects.
 
 ### alloc 和 init
-初始化一个继承于NSObject的对象时我们一般都会这样做。
+初始化一个继承于`NSObject`的对象时我们一般都会这样做。
 ```Objective-C
 SomeClass *instance = [[SomeClass alloc]init];
 ```
-alloc和init有什么用？Apple解释称
+`alloc`和`init`有什么用？`Apple`解释称
 > **alloc**: Returns a new instance of the receiving class. // 返回该类的一个新的实例对象
 
 > **init**: Implemented by subclasses to initialize a new object (the receiver) immediately after memory for it has been allocated. //由子类实现，以便在为新对象(接收方)分配内存之后立即初始化该对象。
 
-但是为什么要这样做呢？其中的细节是什么样子的？事实真的是这样吗？虽说iOS是闭源的，还好Apple开源了Runtime，让我们可以一探究竟。
+但是为什么要这样做呢？其中的细节是什么样子的？事实真的是这样吗？虽说`iOS`是闭源的，还好`Apple`开源了`Runtime`，让我们可以一探究竟。
 
 ### Objective-C Runtime
-什么是[Runtime](https://developer.apple.com/documentation/objectivec/objective-c_runtime?language=objc)？Apple介绍的很清楚
+什么是[Runtime](https://developer.apple.com/documentation/objectivec/objective-c_runtime?language=objc)？`Apple`介绍的很清楚
 
 > Describes the macOS Objective-C runtime library support functions and data structures.
 
