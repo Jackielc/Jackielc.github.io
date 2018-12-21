@@ -44,7 +44,7 @@ alloc和init有什么用？Apple解释称
 **一句话总结：Runtime是Objective-C 面向对象和动态机制的基石。**
 
 ### 下载和编译Runtime
-Runtime目前是开源的，开发者可以自由下载。进入[Apple Open Source](https://opensource.apple.com/source/)，按下`cmd`+`f`并输入`objc4`，然后定位并点击进入目录，will see it
+`Runtime`目前是开源的，开发者可以自由下载。进入[Apple Open Source](https://opensource.apple.com/source/)，按下`cmd`+`f`并输入`objc4`，然后定位并点击进入目录，will see it
 ![post-runtime-files](/img/in-post/in-post-2018/post-runtime-files.png)
 
 尾数越大的表明版本越新，不过我在这里使用的是`objc4-723`版本，虽然Apple有压缩包可以[下载](https://opensource.apple.com/tarballs/objc4/)，但是下载的源代码直接进行
@@ -311,7 +311,7 @@ _objc_rootInit(id obj)
 ```
  SomeClass *instance = [SomeClass new]
 ```
-在runtime中我们可以发现，`new`函数只是`alloc`和`init`函数的联合调用，和默认的构造函数并无二致。
+在`Runtime`中我们可以发现，`new`函数只是`alloc`和`init`函数的联合调用，和默认的构造函数并无二致。
 ```
 + (id)new {
     return [callAlloc(self, false/*checkNil*/) init];
@@ -321,7 +321,7 @@ _objc_rootInit(id obj)
 
 ### 对象内存
 ![post-data-bytes](/img/in-post/in-post-2018/post-data-bytes.png)
-我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8`bytes`，所以一个NSObjec的实例的对象实际大小为8bytes，而在上面的源码中我们可以看到，对于小于16`bytes`的对象来说，Apple会强制分配给16`bytes`的内存，这就解释了为什么下面两段代码返回结果不同的原因
+我们初始化得到的NSObject对象其实是一个指针，指针指向对象实际存在的内存，在64位架构下，指针大小为8`bytes`，所以一个NSObjec的实例对象实际大小为8bytes，而在上面的源码中我们可以看到，对于小于16`bytes`的对象来说，Apple会强制分配给16`bytes`的内存，这就解释了为什么下面两段代码返回结果不同的原因
 ```
 NSObject *objc = [[NSObject alloc] init];
 NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([objc class]));
