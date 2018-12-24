@@ -4,7 +4,7 @@ title:      "alloc和init"
 # date:       2018-12-29 19:00:00
 subtitle: Runtime源码阅读
 author:     "Jackcao"
-header-img: "img/post-bg-20181220.jpg"
+header-img: "img/post-bg-20181222.jpg"
 tags:
     - Runtime
     - iOS
