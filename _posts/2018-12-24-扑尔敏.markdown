@@ -6,7 +6,6 @@ author:     "Jackcao"
 header-img: "img/post-bg-20181224.jpg"
 tags:
     - 生活
-    - 生病
     - 记事
 ---
 
