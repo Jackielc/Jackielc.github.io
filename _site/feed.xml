@@ -5,9 +5,180 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 25 Dec 2018 09:40:14 +0800</pubDate>
-    <lastBuildDate>Tue, 25 Dec 2018 09:40:14 +0800</lastBuildDate>
+    <pubDate>Thu, 27 Dec 2018 14:40:32 +0800</pubDate>
+    <lastBuildDate>Thu, 27 Dec 2018 14:40:32 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>isa与meta class</title>
+        <description>&lt;h1 id=&quot;前言&quot;&gt;前言&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;之前在&lt;code class=&quot;highlighter-rouge&quot;&gt;Runtime&lt;/code&gt;中发现每个对象中都包含&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针，但是它有什么用？结构又是怎样的？&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;http://www.sealiesoftware.com/blog/archive/2009/04/14/objc_explain_Classes_and_metaclasses.html&quot;&gt;- Hamster Emporium:《Classes and metaclasses》&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html&quot;&gt;- Matt Gallagher:《What is a meta-class in Objective-C?》&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://github.com/draveness/analyze/blob/master/contents/objc/从%20NSObject%20的初始化了解%20isa.md&quot;&gt;- draveness:《从 NSObject 的初始化了解 isa》&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;正文&quot;&gt;正文&lt;/h1&gt;
+&lt;h3 id=&quot;class&quot;&gt;Class&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Objective-C&lt;/code&gt;是基于对象的动态语言，每一个对象都是对象所属类的实例，类描述了实例对象的以下行为：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;allocation size&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ivars type&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;layout&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SEL&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Methods&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们在实际的开发中也都知道&lt;code class=&quot;highlighter-rouge&quot;&gt;instance methods&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;class methods&lt;/code&gt;，即实例方法和类方法，实例方法只能由类的实例对象调用，类方法只能由类调用，那你有没有想过，实例方法和类方法都存储在哪里？
+现在我们可以来考虑一下，如果一个对象所有能执行的方法都存在对象中，而且这个对象的方法数量众多，那么所有该类型的对象将会占用很大的内存，这样做分布式的存储方式显然是不合理的而且也是没有必要的。&lt;strong&gt;其实我们可以集中式地统一管理对象的方法：那就是存在对象所属的类中。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;meta-class&quot;&gt;Meta Class&lt;/h3&gt;
+&lt;p&gt;更详细地来说，实例方法和类方法分别存放在&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;中，&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;即为元类。&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;不仅是一个对象，还是&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;的实例对象，而且重要的是&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;的关系类似于&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;Instances&lt;/code&gt;的关系，比如当&lt;code class=&quot;highlighter-rouge&quot;&gt;instances&lt;/code&gt;调用实例方法时，&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;会从自身维护的实例方法列表中去寻找并决定调用该实例方法，同理，当调用类方法时，&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;会从自身维护的类方法列表中寻找并决定调用该类方法。&lt;/p&gt;
+
+&lt;h3 id=&quot;isa-指针&quot;&gt;isa 指针&lt;/h3&gt;
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;Objective-C&lt;/code&gt;中每个继承于&lt;code class=&quot;highlighter-rouge&quot;&gt;NSObject&lt;/code&gt;的子类的实例对象都会存在一个&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;类型的成员变量，叫做&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;。把它们的所有关联都列出来：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@interface NSObject &amp;lt;NSObject&amp;gt; {
+    Class isa  OBJC_ISA_AVAILABILITY;
+}
+
+typedef struct objc_class *Class;
+
+struct objc_class : objc_object {
+    // Class ISA;
+    Class superclass;
+    cache_t cache;             // formerly cache pointer and vtable
+    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+
+    ...
+}
+
+struct objc_object {
+private:
+    isa_t isa;
+  
+    ...
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;我们可以从这段代码中发现，&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;是&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_class&lt;/code&gt;结构体指针，&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_class&lt;/code&gt;继承于&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_object&lt;/code&gt;。还有一个重要的发现：关键字&lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;其实是&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_object&lt;/code&gt;结构体指针，我们在开发中可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;来声明一个对象，这就验证了 &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;其实也是&lt;code class=&quot;highlighter-rouge&quot;&gt;Objective-C&lt;/code&gt;对象&lt;/strong&gt; 的结论。接下来我们来把&lt;code class=&quot;highlighter-rouge&quot;&gt;Class&lt;/code&gt;结构体的结构简化为：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+    isa_t isa;
+    Class superclass;
+    cache_t cache;             // formerly cache pointer and vtable
+    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;由此我们可以看出所有的类的实例对象都应该包含这样的一个结构。类也是一个对象，而且是&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;的对象。在&lt;code class=&quot;highlighter-rouge&quot;&gt;Objective-C&lt;/code&gt;中，所有的对象(类)都是&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_object&lt;/code&gt;结构体指针，所以所有的对象(类)都应包含一个&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;结构体指针，而该指针指向的是对象所属的类(元类)，当对象(类)方法被调用时，对象(类)通过持有的&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;指针去类(元类)中寻找方法的实现，也会通过持有的&lt;code class=&quot;highlighter-rouge&quot;&gt;super_class&lt;/code&gt;指针去父类(父元类)中寻找方法的实现，以完成在继承关系中的链式查找。我还有一个疑问，那&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;是否也存在继承链呢？答案是存在的，就像普通的对象和类一样，&lt;code class=&quot;highlighter-rouge&quot;&gt;Meta Class&lt;/code&gt;也是一个对象，也存在继承链。下面这张经典的图表很直观地阐述了实例对象和类、类和元类之间的关系：
+&lt;img src=&quot;/img/in-post/in-post-2018/runtime-object-chain.png&quot; alt=&quot;runtime-object-chain&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;isa_t指针&quot;&gt;isa_t指针&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;union isa_t 
+{
+    isa_t() { }
+    isa_t(uintptr_t value) : bits(value) { }
+
+    Class cls;
+    uintptr_t bits;
+#if SUPPORT_PACKED_ISA
+# if __arm64__
+#   define ISA_MASK        0x0000000ffffffff8ULL
+#   define ISA_MAGIC_MASK  0x000003f000000001ULL
+#   define ISA_MAGIC_VALUE 0x000001a000000001ULL
+    struct {
+        uintptr_t nonpointer        : 1;
+        uintptr_t has_assoc         : 1;
+        uintptr_t has_cxx_dtor      : 1;
+        uintptr_t shiftcls          : 33; // MACH_VM_MAX_ADDRESS 0x1000000000
+        uintptr_t magic             : 6;
+        uintptr_t weakly_referenced : 1;
+        uintptr_t deallocating      : 1;
+        uintptr_t has_sidetable_rc  : 1;
+        uintptr_t extra_rc          : 19;
+#       define RC_ONE   (1ULL&amp;lt;&amp;lt;45)
+#       define RC_HALF  (1ULL&amp;lt;&amp;lt;18)
+    };
+
+# elif __x86_64__
+#   define ISA_MASK        0x00007ffffffffff8ULL
+#   define ISA_MAGIC_MASK  0x001f800000000001ULL
+#   define ISA_MAGIC_VALUE 0x001d800000000001ULL
+    struct {
+        uintptr_t nonpointer        : 1;
+        uintptr_t has_assoc         : 1;
+        uintptr_t has_cxx_dtor      : 1;
+        uintptr_t shiftcls          : 44; // MACH_VM_MAX_ADDRESS 0x7fffffe00000
+        uintptr_t magic             : 6;
+        uintptr_t weakly_referenced : 1;
+        uintptr_t deallocating      : 1;
+        uintptr_t has_sidetable_rc  : 1;
+        uintptr_t extra_rc          : 8;
+#       define RC_ONE   (1ULL&amp;lt;&amp;lt;56)
+#       define RC_HALF  (1ULL&amp;lt;&amp;lt;7)
+    };
+
+# else
+#   error unknown architecture for packed isa
+# endif
+
+// SUPPORT_PACKED_ISA
+#endif
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;从代码中我们发现，&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;是一个&lt;code class=&quot;highlighter-rouge&quot;&gt;union&lt;/code&gt;类型的结构体，&lt;code class=&quot;highlighter-rouge&quot;&gt;union&lt;/code&gt;类型的结构体与普通结构体最大的不同就是它是共用存储空间的，而且在不同的架构下&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;的内存布局也有比较大的差异，&lt;code class=&quot;highlighter-rouge&quot;&gt;SUPPORT_PACKED_ISA&lt;/code&gt;规定在&lt;code class=&quot;highlighter-rouge&quot;&gt;32&lt;/code&gt;位架构、&lt;code class=&quot;highlighter-rouge&quot;&gt;win32&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;macOS&lt;/code&gt;模拟器环境中&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;的结构体不可设置，此时访问对象的&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针，会直接返回一个指向&lt;code class=&quot;highlighter-rouge&quot;&gt;cls&lt;/code&gt;的指针。&lt;code class=&quot;highlighter-rouge&quot;&gt;Runtime&lt;/code&gt;目前是在&lt;code class=&quot;highlighter-rouge&quot;&gt;macOS&lt;/code&gt;上编译运行的，即我们现在只讨论&lt;code class=&quot;highlighter-rouge&quot;&gt;__x86_64__&lt;/code&gt;架构下的&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;指针。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;inline void 
+objc_object::initInstanceIsa(Class cls, bool hasCxxDtor)
+{
+    initIsa(cls, true, hasCxxDtor);
+}
+
+inline void 
+objc_object::initIsa(Class cls, bool indexed, bool hasCxxDtor) 
+{ 
+    if (!indexed) {
+        isa.cls = cls;
+    } else {
+        isa.bits = ISA_MAGIC_VALUE; // 0x001d800000000001ULL
+        isa.has_cxx_dtor = hasCxxDtor;
+        isa.shiftcls = (uintptr_t)cls &amp;gt;&amp;gt; 3;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;上面的代码在初始化一个&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;指针，并且对其设置值，&lt;code class=&quot;highlighter-rouge&quot;&gt;ISA_MAGIC_VALUE&lt;/code&gt;是十六进制，转换为二进制并补齐到64位为&lt;code class=&quot;highlighter-rouge&quot;&gt;0000000000011101100000000000000000000000000000000000000000000001&lt;/code&gt;，如下图
+&lt;img src=&quot;/img/in-post/in-post-2018/runtime-objc-isa-isat-bits.png&quot; alt=&quot;runtime-objc-isa-isat-bits&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;实际上只设置了&lt;code class=&quot;highlighter-rouge&quot;&gt;indexed&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;magic&lt;/code&gt;这两部分的值。&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;中其它&lt;code class=&quot;highlighter-rouge&quot;&gt;bit&lt;/code&gt;的含义如下：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;indexed&lt;/strong&gt;: 表示&lt;code class=&quot;highlighter-rouge&quot;&gt;isa_t&lt;/code&gt;的类型(是否存在结构体)。主要的区别就是&lt;code class=&quot;highlighter-rouge&quot;&gt;arm64&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;__x86_64__&lt;/code&gt;架构和其他架构的差别。简单地来说就是用于区分&lt;code class=&quot;highlighter-rouge&quot;&gt;iPhone&lt;/code&gt;迁移到&lt;code class=&quot;highlighter-rouge&quot;&gt;64&lt;/code&gt;位系统之前时&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;的类型(0)与迁移之后的类型(1)。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;has_assoc&lt;/strong&gt;: 对象含有或者曾经含有关联引用。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;has_cxx_dtor&lt;/strong&gt;: 表示当前对象是否有&lt;code class=&quot;highlighter-rouge&quot;&gt;C++&lt;/code&gt;或者&lt;code class=&quot;highlighter-rouge&quot;&gt;ObjC&lt;/code&gt;的析构。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;shiftcls&lt;/strong&gt;: 保存关于类的指针。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;magic&lt;/strong&gt;: 用于调试器判断当前对象是真的对象还是没有初始化的空间。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;weakly_referenced&lt;/strong&gt;: 对象被指向或者曾经指向一个&lt;code class=&quot;highlighter-rouge&quot;&gt;ARC&lt;/code&gt;的弱变量。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;deallocating&lt;/strong&gt;: 对象是否正在释放内存。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;has_sidetable_rc&lt;/strong&gt;: 如果&lt;code class=&quot;highlighter-rouge&quot;&gt;extra_rc&lt;/code&gt;计数满了，不够用用存放计数了，&lt;code class=&quot;highlighter-rouge&quot;&gt;has_sidetable_rc&lt;/code&gt;就会为1&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;extra_rc&lt;/strong&gt;: 对象的引用计数超过1，会存在这里面，如果引用计数为3，&lt;code class=&quot;highlighter-rouge&quot;&gt;extra_rc&lt;/code&gt;的值就为2。&lt;code class=&quot;highlighter-rouge&quot;&gt;extra_rc&lt;/code&gt;只有8位，所以它最多能计数到255。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 27 Dec 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/12/27/Runtime(isa+metaclass)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/12/27/Runtime(isa+metaclass)/</guid>
+        
+        <category>Runtime</category>
+        
+        <category>iOS</category>
+        
+        <category>Objective-C</category>
+        
+        
+      </item>
     
       <item>
         <title>扑尔敏</title>
