@@ -221,8 +221,8 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
 ```
 cls->instanceSize(extraBytes); // extraBytes为额外需要的bytes
 ```
-`instanceSize`的内部实现会进行字节对齐，而且会对小于16`bytes`的对象，强制给予16`bytes`。因为`Apple`称
-> ***CF(CoreFoundation) requires all objects be at least 16 bytes.*** //CoreFoundation 要求所有的对象大小至少为16字节
+`instanceSize`的内部实现会进行`bytes`对齐，而且会对小于16`bytes`的对象，强制给予16`bytes`。因为`Apple`称
+> ***CF(CoreFoundation) requires all objects be at least 16 bytes.*** //CoreFoundation 要求所有的对象大小至少为16`bytes`
 
 我们不需要`NSZone`而且`fast`为`ture`，所以我们会直接调用`calloc`进行内存分配,并且初始化`isa`指针
 ```
@@ -360,9 +360,28 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 //objc对象理论所需的内存大小: 16
 //objc对象实际占用的内存大小: 16
 ```
-然而`class_getInstanceSize`输出与我们预期的12`bytes`不符，为什么？因为字节对齐
-> **字节对齐** :结构体大小需是最大成员变量大小的整数倍。
-在结构体`SomeClass_IMPL`中`isa`指针为最大成员变量，根据字节对齐的规则，对象所需内存为`isa`指针内存大小的倍数，即16`bytes`。
+然而`class_getInstanceSize`输出与我们预期的12`bytes`不符，为什么？因为**内存对齐**
+
+###### 内存对齐的概念
+
+尽管内存是以`bytes`为单位，但是大部分处理器并不是按`bytes`块来存取内存的.它一般会以双`bytes`,四`bytes`,8`bytes`,16`bytes`甚至32`bytes`为单位来存取内存，我们将上述这些存取单位称为内存存取粒度，内存对齐的主要作用是提升了处理器读取内存的效率。
+> 每个特定平台上的编译器都有自己的默认“对齐系数”（也叫对齐模数），iOS系统中对齐系数默认为8`bytes`。
+
+> 有效对齐值：是给定值和结构体中最长数据类型长度中较小的那个。有效对齐值也叫对齐单位。
+
+###### 内存对齐的规则
+了解了上面的概念后，我们现在可以来看看内存对齐需要遵循的规则：
+* 结构体第一个成员的偏移量（`offset`）为0，以后每个成员相对于结构体首地址的`offset`都是该成员大小与有效对齐值中较小那个的整数倍，如有需要编译器会在成员之间加上填充`bytes`。
+* 结构体的总大小为有效对齐值（`iOS`中为8）的整数倍，如有需要编译器会在最末一个成员之后加上填充`bytes`。
+
+**根据规则1对结构体内部进行对齐：**
+* `sizeof(isa)8<=8`(有效对齐位)，按照8`bytes`对齐，占用第0单元；<br/>
+* `sizeof(count)4<=8`(有效对齐位)，按照8`bytes`对齐，占用第8~15单元；<br/>
+
+**然后根据规则2，对结构体整体进行对齐：**
+* 结构体`SomeClass_IMPL`中成员变量`isa`指针占用最大内存8`bytes`，整体再按照8`bytes`对齐。
+
+由规则1得结构体`SomeClass_IMPL`占16个`bytes`，再按照规则2进行整体的8`bytes`对齐，所以整个结构体占用16个`bytes`。
 
 如果我们再增加一个`double`型的成员变量。
 ```objective-c
@@ -387,7 +406,17 @@ struct NSObject_IMPL {
     Class isa; 
 };
 ```
-`double`型在64位架构下占用8`bytes`，12+8=20`bytes`，由于结构体`SomeClass_IMPL`中最大的成员变量为`isa`指针，然后根据字节对齐规则，得出`SomeClass`的实例对象所需24`bytes`，占用内存24`bytes`，然后来验证一下结果
+
+**根据规则1内部对齐：**
+* `sizeof(isa)8<=8`，按照8`bytes`对齐，占用第0单元；<br/>
+* `sizeof(count)4<=8`，按照8`bytes`对齐，占用第8~15单元；<br/>
+* `sizeof(width)8<=8`，按照8`bytes`对齐，占用第16~23单元；<br/>
+
+**然后根据规则2整体进行对齐：**
+* 结构体`SomeClass_IMPL`中成员变量`isa`指针(或者成员变量`width`)占用最大内存8`bytes`，整体再按照8`bytes`对齐。
+
+由规则1得结构体`SomeClass_IMPL`占24`bytes`，再按照规则2进行整体的8`bytes`对齐，所以整个结构体理论应该占用24`bytes`。
+
 ```objective-c
 SomeClass *instance = [[SomeClass alloc] init];
 NSLog(@"objc对象实际需要的内存大小: %zd", class_getInstanceSize([instance class]));
@@ -404,4 +433,4 @@ NSLog(@"objc对象实际分配的内存大小: %zd", malloc_size((__bridge const
 可以看出系统是按16的倍数来分配对象的内存大小的。由于24并不是16的倍数，所以系统取值32，固分配内存32`bytes`，这就是为什么系统输出和我们预期不符的原因。
 
 ### So
-**`alloc`函数负责分配内存并返回地址给指针，`init`则更多的关注于初始化实例的行为和能力，对象内存是根据CF Require、字节对齐、bucket等规则来分配的。**
+**`alloc`函数负责分配内存并返回地址给指针，`init`则更多的关注于初始化实例的行为和能力，对象内存占用是根据内存对齐来计算的，而对象内存实际占用则是根据CF Require、bucket基准倍数等规则来计算的。**
