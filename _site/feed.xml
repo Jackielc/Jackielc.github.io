@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 27 Dec 2018 14:40:32 +0800</pubDate>
-    <lastBuildDate>Thu, 27 Dec 2018 14:40:32 +0800</lastBuildDate>
+    <pubDate>Thu, 27 Dec 2018 15:01:03 +0800</pubDate>
+    <lastBuildDate>Thu, 27 Dec 2018 15:01:03 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -34,7 +34,7 @@
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Methods&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;我们在实际的开发中也都知道&lt;code class=&quot;highlighter-rouge&quot;&gt;instance methods&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;class methods&lt;/code&gt;，即实例方法和类方法，实例方法只能由类的实例对象调用，类方法只能由类调用，那你有没有想过，实例方法和类方法都存储在哪里？
+&lt;p&gt;我们在实际开发中也都知道&lt;code class=&quot;highlighter-rouge&quot;&gt;instance methods&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;class methods&lt;/code&gt;，即实例方法和类方法，实例方法只能由类的实例对象调用，类方法只能由类调用，那你有没有想过，实例方法和类方法都存储在哪里？
 现在我们可以来考虑一下，如果一个对象所有能执行的方法都存在对象中，而且这个对象的方法数量众多，那么所有该类型的对象将会占用很大的内存，这样做分布式的存储方式显然是不合理的而且也是没有必要的。&lt;strong&gt;其实我们可以集中式地统一管理对象的方法：那就是存在对象所属的类中。&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;meta-class&quot;&gt;Meta Class&lt;/h3&gt;
@@ -166,6 +166,9 @@ objc_object::initIsa(Class cls, bool indexed, bool hasCxxDtor)
   &lt;li&gt;&lt;strong&gt;has_sidetable_rc&lt;/strong&gt;: 如果&lt;code class=&quot;highlighter-rouge&quot;&gt;extra_rc&lt;/code&gt;计数满了，不够用用存放计数了，&lt;code class=&quot;highlighter-rouge&quot;&gt;has_sidetable_rc&lt;/code&gt;就会为1&lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;extra_rc&lt;/strong&gt;: 对象的引用计数超过1，会存在这里面，如果引用计数为3，&lt;code class=&quot;highlighter-rouge&quot;&gt;extra_rc&lt;/code&gt;的值就为2。&lt;code class=&quot;highlighter-rouge&quot;&gt;extra_rc&lt;/code&gt;只有8位，所以它最多能计数到255。&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;h1 id=&quot;总结&quot;&gt;总结&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针更偏向于底层，并没有做很深入的探究，目前只需要了解到&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针的基本概念和结构就已适用。&lt;code class=&quot;highlighter-rouge&quot;&gt;meta class&lt;/code&gt;的更多实现细节已经被&lt;code class=&quot;highlighter-rouge&quot;&gt;Apple&lt;/code&gt;所隐藏，我们只能看到它的外在表现，而更重要的内部实现我们无从所知。&lt;/p&gt;
 </description>
         <pubDate>Thu, 27 Dec 2018 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/12/27/Runtime(isa+metaclass)/</link>
