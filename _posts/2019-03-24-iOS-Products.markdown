@@ -54,4 +54,4 @@ tags:
 
 #### Noodle camera
 **[Noodle Camera](https://itunes.apple.com/cn/app/noodle-camera/id1261715551?l=en&mt=8)是一款图片风格转换的应用，通过深度学习训练的人工智能算法，感受毕加索梵高这些大师们的视角。还是一件在朋友圈摄影大赛中脱颖而出的利器。UI和交互都是独立设计,并且有十几种风格供选择,视频展示如下**
-<video id="video" style="display:block; margin: 0 auto;" poster="/img/in-post/in-post-2018/noodlecamera.MP4" width = "250">
+<video id="video" style="display:block; margin: 0 auto;" poster="/img/in-post/in-post-2018/noodlecamera.mp4" width = "250" poster="/img/in-post/in-post-2018/thumbnail.png" controls>
