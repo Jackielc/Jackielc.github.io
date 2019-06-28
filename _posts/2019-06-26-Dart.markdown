@@ -12,33 +12,4 @@ tags:
 
 ## 前言
 
-***创作中...***
-<!-- 由于最近业务线要**all in Flutter**，**Flutter**是使用**Dart**来实现的，所以学习了**Dart**的语言特性，从变量到操作符、从类到库....感觉也是个挺不错的语言，和**Objective-C**有很多的相似之处。
-
-## Dart
-
-### 整体架构
-**Dart**的整体架构如下图：
-![post-zhengzhou](/img/in-post/in-post-2019/post-dart-architecture.jpg)
-
-从图中不难看出，**Dart**是基于**C++**实现的，上层的**SDK**是由**Dart**来封装实现的。
-
-### 编译模式
-在Objective-C
-dart既支持JIT方式的编译和AOT方式的编译
-Dart 是(可能唯一)一种同时支持 JIT/AOT 编译的语言. JIT 开发模式时能快速编译生效，是Hot Reload体验的关键。AOT 生成高效的原生代码，和 C/C++ 生成的代码不遑多让。 -->
-
-<!-- ### 整体架构
-了解一下**Dart**y有四种编译模式
-<br/>
-* **Script**：最普通的 JIT模式，在 PC命令行调用 dart vm执行 dart源代码文件即是这种模式。<br/>
-* **Script Snapshot**：JIT模式，和上一个不同的是，这里载入的是已经 token化的 dart源代码，提前执行了上一步的 lexer步骤。<br/>
-* **Application Snapshot**：JIT模式，这种模式来源于 dart vm直接载入源码后 dump出数据。dart vm通过这种数据启动会更快。不过值得一提的是这种模式是区分架构的，在 x64上生成的数据不可以给 arm使用。<br/>
-* **AOT**：AOT模式，直接将 dart源码编译出 .S文件，然后通过汇编器生成对应架构的代码。<br/>
-
-|  模式   | 编译方式 | 区分架构 | 包体积 | 动态化 |
-|  ----  | ----  | ---- | ----  |  ----  |
-| Script  | JIT | 否 | 小 | 是 |
-| Script Snapshot | JIT | 否 | 很小 | 是 |
-| Application Snapshot  | JIT | 是 | 大 | 是 |
-| AOT  | AOT | 是 | 大 | 否 | -->
+***本地创作中...***
